@@ -22,32 +22,31 @@ def main():
 
     # menu selection
 
-    cmd = 1
-##    showMenu()
-##    cmd = getInt('Enter Command: ')
+    showMenu()
+    cmd = getInt('Enter Command: ')
 
     while cmd != 0:
         print()
         if cmd == 1:
-            topPlayers(stats)
+            print(topPlayers(stats))
         elif cmd == 2:
-            topOffensives()
+            print(topOffensives(stats))
         elif cmd == 3:
-            topDefensives()
+            print(topDefensives(stats))
         elif cmd == 4:
-            topScorers()
+            print(topScorers())
         elif cmd == 5:
-            topAssisters()
+            print(topAssisters())
         elif cmd == 6:
-            topStealers()
+            print(topStealers())
         elif cmd == 7:
-            topRebounders()
+            print(topRebounders())
         elif cmd == 8:
-            topBlockers()
+            print(topBlockers())
         elif cmd == 9:
-            topShooters()
+            print(topShooters())
         elif cmd == 10:
-            topThreeShooters()
+            print(topThreeShooters())
         else:
             print('Invalid command!')
 ##
@@ -57,21 +56,118 @@ def main():
 
 
 def topPlayers(data):
+##    calc = []
+##    ids = []
+##
+##    for i in range(len(data['id'])):
+##        amt = ((data['pts'][i] + data['reb'][i] + data['asts'][i]\
+##        + data['stl'][i] + data['blk'][i]) - ((data['fga'][i] - data['fgm'][i])\
+##        - (data['fta'][i] - data['ftm'][i]) + data['turnover'][i])) / data['gp'][i]
+##
+##        ids.append(data['id'][i])
+##        calc.append(amt)
+##
+##    result = combineAndSort(calc, ids)
+##    return topFifty(data, result)
+    return topFifty(data, getStuff(data,'top-players'))
+
+def topOffensives(data):
     calc = []
     ids = []
 
     for i in range(len(data['id'])):
-        amt = ((data['pts'][i] + data['reb'][i] + data['asts'][i]\
-        + data['stl'][i] + data['blk'][i]) - ((data['fga'][i] - data['fgm'][i])\
-        - (data['fta'][i] - data['ftm'][i]) + data['turnover'][i])) / data['gp'][i]
+        fga = data['fga'][i]
+        if fga == 0:
+            fga = -1
+
+        amt = ((data['pts'][i] + data['asts'][i]) \
+        - (data['turnover'][i] * 4)) \
+        * (data['fgm'][i] / fga)
 
         ids.append(data['id'][i])
         calc.append(amt)
 
     result = combineAndSort(calc, ids)
+    return topFifty(data, result)
 
-    print(topFifty(data, result))
+def topDefensives(data):
+    calc = []
+    ids = []
 
+    for i in range(len(data['id'])):
+
+
+        ids.append(data['id'][i])
+        calc.append(amt)
+
+    result = combineAndSort(calc, ids)
+    return topFifty(data, result)
+
+
+
+def getStuff(data,calcType):
+    calc = []
+    ids = []
+
+    for index in range(len(data['id'])):
+        amt = getCalculation(data, calcType, index)
+
+        ids.append(data['id'][index])
+        calc.append(amt)
+
+    return combineAndSort(calc, ids)
+
+
+def getCalculation(data, calcType, i):
+    amt = 0
+    if calcType == 'top-players':
+        amt = ((data['pts'][i] + data['reb'][i] + data['asts'][i]\
+        + data['stl'][i] + data['blk'][i]) - ((data['fga'][i] - data['fgm'][i])\
+        - (data['fta'][i] - data['ftm'][i]) + data['turnover'][i])) / data['gp'][i]
+
+    elif calcType == 'top-offensives':
+        fga = data['fga'][i]
+        if fga == 0:
+            fga = -1
+
+        amt = ((data['pts'][i] + data['asts'][i]) \
+        - (data['turnover'][i] * 4)) \
+        * (data['fgm'][i] / fga)
+
+    elif calcType == 'top-defensives':
+        amt = (data['dreb'][i] + (data['stl'][i] * 1.5)) \
+        + (data['blk'][i] * 2)
+
+    elif calcType == 'top-scorers':
+        pass
+    elif calcType == 'top-assists':
+        pass
+    elif calcType == 'top-steals':
+        pass
+    elif calcType == 'top-blocks':
+        pass
+    elif calcType == 'top-shooters':
+        pass
+    elif calcType == 'top-3-shooters':
+        pass
+    else:
+        pass
+    return amt
+
+def topScorers():
+    pass
+def topAssisters():
+    pass
+def topStealers():
+    pass
+def topRebounders():
+    pass
+def topBlockers():
+    pass
+def topShooters():
+    pass
+def topThreeShooters():
+    pass
 
 def combineAndSort(valueList, keyList):
     result = list(zip(valueList, keyList))
@@ -92,27 +188,6 @@ def topFifty(data, lst):
         output += str(i+1) + '. ' + data['firstname'][tempID] + ' ' + data['lastname'][tempID] + '\n'
 
     return output
-
-
-def topOffensives():
-    pass
-def topDefensives():
-    pass
-def topScorers():
-    pass
-def topAssisters():
-    pass
-def topStealers():
-    pass
-def topRebounders():
-    pass
-def topBlockers():
-    pass
-def topShooters():
-    pass
-def topThreeShooters():
-    pass
-
 
 def getInt(prompt):
     ## prompt: string, countains user input prompt
