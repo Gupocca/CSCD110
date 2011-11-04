@@ -7,6 +7,11 @@
 import sys
 
 def main():
+
+#   VARIABLES
+##  stats - dictionary; contains nifty data
+##  cmd - string; command inputed by user
+
     try:
         stats = loadStats('player_career.txt')
     except IOError as e:
@@ -63,7 +68,7 @@ def getTop(data,calcType):
 ##  index - number; accumulator which represents a player
 
     calc = []
-    ids = []
+    ids  = []
 
     for index in range(len(data['id'])):
         ids.append(data['id'][index])
@@ -74,10 +79,10 @@ def getTop(data,calcType):
 
 
 # returns the calculated value for a given index
-def getCalculation(data, calcType, i):
+def getCalculation(dat, calcType, i):
 
 #   PARAMETERS
-##  data - dictionary; contains all the stat data
+##  dat - dictionary; contains all the stat data
 ##  calcType - string; the calculation ID to perform
 ##  i - int; index value for the current row to operate on
 
@@ -88,49 +93,58 @@ def getCalculation(data, calcType, i):
     amt = 0
 
     if calcType == 'top-players':
-        amt = ((data['pts'][i] + data['reb'][i] + data['asts'][i]\
-        + data['stl'][i] + data['blk'][i]) - ((data['fga'][i] - data['fgm'][i])\
-        - (data['fta'][i] - data['ftm'][i]) + data['turnover'][i])) / data['gp'][i]
+        # calculate the value
+        amt = ((dat['pts'][i] + dat['reb'][i] + dat['asts'][i] \
+        + dat['stl'][i] + dat['blk'][i]) - ((dat['fga'][i] - dat['fgm'][i]) \
+        - (dat['fta'][i] - dat['ftm'][i]) + dat['turnover'][i])) / dat['gp'][i]
 
     elif calcType == 'top-offensives':
         # prevent division by 0
-        fga = data['fga'][i] if data['tpm'][i] != 0 else 1
+        fga = dat['fga'][i] if dat['tpm'][i] != 0 else 1
 
-        amt = ((data['pts'][i] + data['asts'][i]) \
-        - (data['turnover'][i] * 4)) \
-        * (data['fgm'][i] / fga)
+        # calculate the value
+        amt = ((dat['pts'][i] + dat['asts'][i]) \
+        - (dat['turnover'][i] * 4)) \
+        * (dat['fgm'][i] / fga)
 
     elif calcType == 'top-defensives':
-        amt = (data['dreb'][i] + (data['stl'][i] * 1.5)) \
-        + (data['blk'][i] * 2)
+        # calculate the value
+        amt = (dat['dreb'][i] + (dat['stl'][i] * 1.5)) \
+        + (dat['blk'][i] * 2)
 
     elif calcType == 'top-scorers':
-        amt = data['pts'][i]
+        # calculate the value
+        amt = dat['pts'][i]
 
     elif calcType == 'top-assists':
-        amt = data['asts'][i]
+        # calculate the value
+        amt = dat['asts'][i]
 
     elif calcType == 'top-steals':
-        amt = data['stl'][i]
+        # calculate the value
+        amt = dat['stl'][i]
 
     elif calcType == 'top-blocks':
-        amt = data['blk'][i]
+        # calculate the value
+        amt = dat['blk'][i]
 
     elif calcType == 'top-shooters':
         # prevent division by 0
-        fga = data['fga'][i] if data['tpm'][i] != 0 else 1
-        fta = data['fta'][i] if data['fta'][i] != 0 else 1
-        tpa = data['tpa'][i] if data['tpa'][i] != 0 else 1
+        fga = dat['fga'][i] if dat['tpm'][i] != 0 else 1
+        fta = dat['fta'][i] if dat['fta'][i] != 0 else 1
+        tpa = dat['tpa'][i] if dat['tpa'][i] != 0 else 1
 
-        amt = ((data['fgm'][i] / fga) * 2) \
-        + (data['ftm'][i] / fta) \
-        + ((data['tpm'][i] / tpa)*3)
+        # calculate the value
+        amt = ((dat['fgm'][i] / fga) * 2) \
+        + (dat['ftm'][i] / fta) \
+        + ((dat['tpm'][i] / tpa) * 3)
 
     elif calcType == 'top-3-shooters':
         # prevent division by 0
-        tpa = data['tpa'][i] if data['tpa'][i] != 0 else 1
+        tpa = dat['tpa'][i] if dat['tpa'][i] != 0 else 1
 
-        amt = data['tpm'][i] / tpa
+        # calculate the value
+        amt = dat['tpm'][i] / tpa
 
     ## end calculations
     return amt
