@@ -56,103 +56,13 @@ def main():
 
 
 def topPlayers(data):
-##    calc = []
-##    ids = []
-##
-##    for i in range(len(data['id'])):
-##        amt = ((data['pts'][i] + data['reb'][i] + data['asts'][i]\
-##        + data['stl'][i] + data['blk'][i]) - ((data['fga'][i] - data['fgm'][i])\
-##        - (data['fta'][i] - data['ftm'][i]) + data['turnover'][i])) / data['gp'][i]
-##
-##        ids.append(data['id'][i])
-##        calc.append(amt)
-##
-##    result = combineAndSort(calc, ids)
-##    return topFifty(data, result)
-    return topFifty(data, getStuff(data,'top-players'))
+    return topFifty(data, getTop(data,'top-players'))
 
 def topOffensives(data):
-    calc = []
-    ids = []
-
-    for i in range(len(data['id'])):
-        fga = data['fga'][i]
-        if fga == 0:
-            fga = -1
-
-        amt = ((data['pts'][i] + data['asts'][i]) \
-        - (data['turnover'][i] * 4)) \
-        * (data['fgm'][i] / fga)
-
-        ids.append(data['id'][i])
-        calc.append(amt)
-
-    result = combineAndSort(calc, ids)
-    return topFifty(data, result)
+    return topFifty(data, getTop(data,'top-offensives'))
 
 def topDefensives(data):
-    calc = []
-    ids = []
-
-    for i in range(len(data['id'])):
-
-
-        ids.append(data['id'][i])
-        calc.append(amt)
-
-    result = combineAndSort(calc, ids)
-    return topFifty(data, result)
-
-
-
-def getStuff(data,calcType):
-    calc = []
-    ids = []
-
-    for index in range(len(data['id'])):
-        amt = getCalculation(data, calcType, index)
-
-        ids.append(data['id'][index])
-        calc.append(amt)
-
-    return combineAndSort(calc, ids)
-
-
-def getCalculation(data, calcType, i):
-    amt = 0
-    if calcType == 'top-players':
-        amt = ((data['pts'][i] + data['reb'][i] + data['asts'][i]\
-        + data['stl'][i] + data['blk'][i]) - ((data['fga'][i] - data['fgm'][i])\
-        - (data['fta'][i] - data['ftm'][i]) + data['turnover'][i])) / data['gp'][i]
-
-    elif calcType == 'top-offensives':
-        fga = data['fga'][i]
-        if fga == 0:
-            fga = -1
-
-        amt = ((data['pts'][i] + data['asts'][i]) \
-        - (data['turnover'][i] * 4)) \
-        * (data['fgm'][i] / fga)
-
-    elif calcType == 'top-defensives':
-        amt = (data['dreb'][i] + (data['stl'][i] * 1.5)) \
-        + (data['blk'][i] * 2)
-
-    elif calcType == 'top-scorers':
-        pass
-    elif calcType == 'top-assists':
-        pass
-    elif calcType == 'top-steals':
-        pass
-    elif calcType == 'top-blocks':
-        pass
-    elif calcType == 'top-shooters':
-        pass
-    elif calcType == 'top-3-shooters':
-        pass
-    else:
-        pass
-    return amt
+    return topFifty(data, getTop(data,'top-defensives'))
 
 def topScorers():
     pass
@@ -169,7 +79,105 @@ def topShooters():
 def topThreeShooters():
     pass
 
+# returns a list of the best players for a given category
+def getTop(data,calcType):
+
+#   PARAMETERS
+##  data - dictionary; contains all the stat data
+##  calcType - string; the category of operation to perform
+
+#   VARIABLES
+##  calc - list; contains calculated values
+##  ids - list; contains corresponding player IDs
+##  index - number; accumulator which represents a player
+
+    calc = []
+    ids = []
+
+    for index in range(len(data['id'])):
+        ids.append(data['id'][index])
+        calc.append(getCalculation(data, calcType, index))
+
+    return combineAndSort(calc, ids)
+
+
+
+# returns the calculated value for a given index
+def getCalculation(data, calcType, i):
+
+#   PARAMETERS
+##  data - dictionary; contains all the stat data
+##  calcType - string; the calculation ID to perform
+##  i - int; index value for the current row to operate on
+
+#   VARIABLES
+##  amt - number; represents the calculated result
+##  fga, fta, tpa - numbers; represent their corresponding values, but prevent division by zero
+
+    amt = 0
+
+    if calcType == 'top-players':
+        amt = ((data['pts'][i] + data['reb'][i] + data['asts'][i]\
+        + data['stl'][i] + data['blk'][i]) - ((data['fga'][i] - data['fgm'][i])\
+        - (data['fta'][i] - data['ftm'][i]) + data['turnover'][i])) / data['gp'][i]
+
+    elif calcType == 'top-offensives':
+        # prevent division by 0
+        fga = data['fga'][i] if data['tpm'][i] != 0 else -0.1
+
+        amt = ((data['pts'][i] + data['asts'][i]) \
+        - (data['turnover'][i] * 4)) \
+        * (data['fgm'][i] / fga)
+
+    elif calcType == 'top-defensives':
+        amt = (data['dreb'][i] + (data['stl'][i] * 1.5)) \
+        + (data['blk'][i] * 2)
+
+    elif calcType == 'top-scorers':
+        amt = data['pts'][i]
+
+    elif calcType == 'top-assists':
+        amt = data['asts'][i]
+
+    elif calcType == 'top-steals':
+        amt = data['stls'][i]
+
+    elif calcType == 'top-blocks':
+        amt = data['blk'][i]
+
+    elif calcType == 'top-shooters':
+        # prevent division by 0
+        fga = data['fga'][i] if data['tpm'][i] != 0 else -0.1
+        fta = data['fta'][i] if data['fta'][i] != 0 else -0.1
+        tpa = data['tpa'][i] if data['tpa'][i] != 0 else -0.1
+
+        amt = ((data['fgm'][i] / fga) * 2) \
+        + (data['ftm'][i] / fta) \
+        + ((data['tpm'][i] / tpa)*3)
+
+    elif calcType == 'top-3-shooters':
+        # prevent division by 0
+        tpa = data['tpa'][i] if data['tpa'][i] != 0 else -0.1
+
+        amt = data['tpm'][i] / tpa
+
+    ## end calculations
+    return amt
+
+
+
+# takes two lists, sorts them by valueList, and returns
+# one list containing sub-lists in the form [value, key]
 def combineAndSort(valueList, keyList):
+
+#   PARAMETERS
+##  valueList - list; a list to sort by
+##  keyList - list; a list with identifiers
+
+#   VARIABLES
+##  result - list; contains final results
+##  i - number; simple accumulator index
+
     result = list(zip(valueList, keyList))
     result.sort()
     result.reverse()
@@ -180,7 +188,17 @@ def combineAndSort(valueList, keyList):
     return result
 
 
+# returns the first fifty player names in a given ID-list
 def topFifty(data, lst):
+
+#   PARAMETERS
+##  data - dictionary; contains all the stat data
+##  lst - list; contains player ID's in whatever order desired
+
+#   VARIABLES
+##  output - string; contains output...
+##  tempID - string; holds a temporary player ID
+
     output = ''
 
     for i in range(50):
@@ -189,8 +207,13 @@ def topFifty(data, lst):
 
     return output
 
+
+
+# gets an int from the user
 def getInt(prompt):
-    ## prompt: string, countains user input prompt
+
+#   PARAMETERS
+## prompt: string, countains user input prompt
 
     try:
         return int(input(prompt))
@@ -198,6 +221,8 @@ def getInt(prompt):
         return None
 
 
+
+# displaysthe menu
 def showMenu():
     print()
     print('- - - - - - - - - - - -')
@@ -217,7 +242,20 @@ def showMenu():
     print()
 
 
+
+# loads the player statistics from a given filename
 def loadStats(filename):
+
+#   PARAMETERS
+##  filename - string; the file to open
+
+#   VARIABLES
+##  file - handle; represents the file
+##  columns - list; the columns to use
+##  data - dictionary; accumulates all the data
+##  line - string; contains the value of a line
+##  values - list; contains individual values of a list
+
     try:
         with open(filename, 'r') as file:
             file.readline() # skip the first line
@@ -236,13 +274,13 @@ def loadStats(filename):
                 if (line == ''):
                     break
 
-                line = line.split(',')
+                values = line.split(',')
 
-                for j in range(len(line)):
+                for j in range(len(values)):
                     if j > 3:
-                        data[columns[j]].append(int(line[j]))
+                        data[columns[j]].append(int(values[j]))
                     else:
-                        data[columns[j]].append(line[j].strip())
+                        data[columns[j]].append(values[j].strip())
 
             print('Loaded stats.')
             return data
