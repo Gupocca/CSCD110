@@ -34,50 +34,55 @@ def main():
         elif cmd == 3:
             print(topDefensives(stats))
         elif cmd == 4:
-            print(topScorers())
+            print(topScorers(stats))
         elif cmd == 5:
-            print(topAssisters())
+            print(topAssisters(stats))
         elif cmd == 6:
-            print(topStealers())
+            print(topStealers(stats))
         elif cmd == 7:
-            print(topRebounders())
+            print(topRebounders(stats))
         elif cmd == 8:
-            print(topBlockers())
+            print(topBlockers(stats))
         elif cmd == 9:
-            print(topShooters())
+            print(topShooters(stats))
         elif cmd == 10:
-            print(topThreeShooters())
+            print(topThreeShooters(stats))
         else:
             print('Invalid command!')
-##
-##        showMenu()
-##        cmd = getInt('Enter Command: ')
-        cmd = 0
+
+        showMenu()
+        cmd = getInt('Enter Command: ')
 
 
-def topPlayers(data):
+def topPlayers(data): # returns top fifty players
     return topFifty(data, getTop(data,'top-players'))
 
-def topOffensives(data):
+def topOffensives(data): # returns top fifty offensive players
     return topFifty(data, getTop(data,'top-offensives'))
 
-def topDefensives(data):
+def topDefensives(data): # returns top fifty defensive players
     return topFifty(data, getTop(data,'top-defensives'))
 
-def topScorers():
-    pass
-def topAssisters():
-    pass
-def topStealers():
-    pass
-def topRebounders():
-    pass
-def topBlockers():
-    pass
-def topShooters():
-    pass
-def topThreeShooters():
-    pass
+def topScorers(data): # returns top fifty players for scoring
+    return topFifty(data, getTop(data,'top-scorers'))
+
+def topAssisters(data): # returns top fifty players for assisting
+    return topFifty(data, getTop(data,'top-assists'))
+
+def topStealers(data): # returns top fifty players for stealing
+    return topFifty(data, getTop(data,'top-steals'))
+
+def topRebounders(data): # returns top fifty players for rebounding
+    return topFifty(data, getTop(data,'top-rebounds'))
+
+def topBlockers(data): # returns top fifty players for blocking
+    return topFifty(data, getTop(data,'top-blocks'))
+
+def topShooters(data): # returns top fifty players for shooting
+    return topFifty(data, getTop(data,'top-shooters'))
+
+def topThreeShooters(data): # returns top fifty players for shooting 3-pointers
+    return topFifty(data, getTop(data,'top-3-shooters'))
 
 # returns a list of the best players for a given category
 def getTop(data,calcType):
@@ -140,7 +145,7 @@ def getCalculation(data, calcType, i):
         amt = data['asts'][i]
 
     elif calcType == 'top-steals':
-        amt = data['stls'][i]
+        amt = data['stl'][i]
 
     elif calcType == 'top-blocks':
         amt = data['blk'][i]
