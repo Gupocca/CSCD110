@@ -1,45 +1,54 @@
-import math
+## Stephen Hoerner
+## Assignment #4
+## CSCD 110
 
+# main program
 def main():
-    lst = []
+    ## values:  list, contains the values
+    ## cmd:     number, command index given by user
+
+    values = []
 
     showMenu()
     cmd = inputNum('Enter Command: ')
 
-    while (cmd != 0):
+    while cmd != 0:
+        print()
         if cmd == 1:
-            showList(lst)
-        
+            showList(values)
+
         elif cmd == 2:
-            lst = addNum(lst)
-        
+            values = addNum(values)
+
         elif cmd == 3:
-            lst = delNum(lst)
-        
+            values = delNum(values)
+
         elif cmd == 4:
-            lst = purgeList(lst)
-        
+            values = purgeList(values)
+
         elif cmd == 5:
-            print(getMean(lst))
-        
+            print(getMean(values))
+
         elif cmd == 6:
-            print(getMidRange(lst))
-        
+            print(getMidRange(values))
+
         elif cmd == 7:
-            print(getMedian(lst))
-        
+            print(getMedian(values))
+
         elif cmd == 8:
-            print(getMode(lst))
-        
+            showList(getMode(values))
+
         else:
             print('Invalid command!')
-        
+
         showMenu()
         cmd = inputNum('Enter Command: ')
-    
 
+
+# displays a menu for commands
 def showMenu():
     print()
+    print('- - - - - - - - - - - -')
     print('1. display numbers')
     print('2. add number')
     print('3. delete number')
@@ -50,65 +59,155 @@ def showMenu():
     print('8. find mode')
     print()
     print('0. exit')
+    print('- - - - - - - - - - - -')
     print()
 
+
+# displays the contents of a list
 def showList(group):
-    print()
+    ## group:   list, contains values
+    ## output:  string, accumulator
+    ## num:     number, iterator
+
     output = ''
+
     for num in group:
-        if (output == ''):
+        if output == '':
             output += str(num)
         else:
             output += ', ' + str(num)
+
     print(output)
 
+
+# adds a number to a list
 def addNum(group):
+    ## group:   list, contains values
+    ## ui:      number, user input
+
     ui = inputNum('Number to add: ')
-    group.append(ui)
-    group.sort()
-    return group
 
-def delNum(group):
-    showList(group)
-    print()
-
-    ui = inputNum('Number to delete: ')
-    group.remove(ui)
-    group.sort()
-    return group
-
-def purgeList(group):
-    for i in group:
-        group.pop(i)
-
-    return group
-
-def getMean(group):
-    output = 0;
-
-    for num in group:
-        output += num
-    
-    output /= len(group)
-    return output
-
-def getMidRange(group):
-    pass
-
-def getMedian(group):
-    if (len(group) - 1 % 2):
-        return group[(len(group)-1)//2]
+    if ui != None:
+        group.append(ui)
+        group.sort()
+        print('Number added.')
     else:
-        ind = math.floor((len(group)-1) / 2)
-        val1 = group[ind]
-        val2 = group[ind + 1]
-        return (val1 + val2)/2
+        print('Invalid number!')
 
+    return group
+
+
+# removes a number from a list
+def delNum(group):
+    ## group:   list, contains values
+    ## orig:    list, duplicate of 'list' in case of error
+    ## ui:      number, user input
+
+    orig = group
+    showList(group)
+
+    try:
+        ui = inputNum('Number to delete: ')
+        if ui != None:
+            group.remove(ui)
+            print('Number removed.')
+        else:
+            raise ValueError
+
+    except ValueError:
+        print('Not a valid number!')
+
+    else:
+        return orig
+
+
+# purges (clears) a list
+def purgeList(group):
+    ## group: list, contains values
+
+    group = [] # clears actual list, rather than pointing to a new one
+    print('Purge successful.')
+    return group
+
+
+# returns the mean of a list
+def getMean(group):
+    ## group:   list, contains values
+    ## output:  accumulator, holds result
+    ## num:     number, iterator
+
+    output = 0
+
+    try:
+        for num in group:
+            output += num
+
+        output /= len(group)
+        return output
+
+    except:
+        return 'Cannot compute; list unsuitable'
+
+
+# returns the midrange of a list
+def getMidRange(group):
+    ## group: list, contains values
+
+    if group == []:
+        return 'Cannot compute; list invalid'
+
+    return (min(group) + max(group)) / 2
+
+
+# returns the median of a list
+def getMedian(group):
+    ## group:   list, contains values
+    ## val1:    number, first median value
+    ## val2:    number, second median value
+    try:
+        if (len(group) - 1) % 2 == 0:
+            return group[(len(group)-1)//2]
+
+        else:
+            val1 = group[len(group)//2 - 1]
+            val2 = group[len(group)//2]
+            return (val1 + val2)/2
+
+    except IndexError:
+        return 'Cannot compute; list invalid'
+
+
+# returns the mode(s) of a list
 def getMode(group):
-    pass
+    ## group:   list, contains values
+    ## modes:   list, accumulates modes for output
+    ## counts:  dictionary, holds the count for each list value
+    ## i, j:    numbers, iterators
 
+    if group == []:
+        return ['Cannot compute; list invalid']
+
+    modes = []
+    counts = {}
+
+    for i in group:
+        counts[i] = group.count(i)
+
+    for j in counts.keys():
+        if counts[j] == max(counts.values()) and j not in modes:
+            modes.append(j)
+
+    return modes
+
+
+# gets number from user
 def inputNum(prompt):
-    # should have validation eventually
-    return int(input(prompt))
-    
-main()
+    ## prompt: string, countains user input prompt
+
+    try:
+        return eval(input(prompt))
+    except:
+        return None
+
+
+main() # I wonder what happens if you comment this out?
