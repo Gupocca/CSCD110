@@ -68,25 +68,10 @@ def topPlayers(data):
         ids.append(data['id'][i])
         calc.append(amt)
 
-##    l1 = [2,1,3,4,5]
-##    l2 = ['a','b','c','d','e']
-##    result = list(zip(calc, ids))
-##    result.sort()
-##    result.reverse()
     result = combineAndSort(calc, ids)
 
     print(topFifty(data, result))
-##    output = ''
-##    for i in range(50):
-##        tempID = data['id'].index(list(result[i])[1])
-##        output += str(i+1) + '. ' + data['firstname'][tempID] + ' ' + data['lastname'][tempID] + '\n'
-##
-##    return output
 
-    #print(result[:50])
-    #for i in range(10):
-    #    print(result[0][i],result[1][i])
-    #return calc
 
 def combineAndSort(valueList, keyList):
     result = list(zip(valueList, keyList))
