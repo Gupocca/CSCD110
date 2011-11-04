@@ -95,22 +95,20 @@ def getCalculation(dat, calcType, i):
     if calcType == 'top-players':
         # calculate the value
         amt = ((dat['pts'][i] + dat['reb'][i] + dat['asts'][i] \
-        + dat['stl'][i] + dat['blk'][i]) - ((dat['fga'][i] - dat['fgm'][i]) \
-        - (dat['fta'][i] - dat['ftm'][i]) + dat['turnover'][i])) / dat['gp'][i]
+            + dat['stl'][i] + dat['blk'][i]) - ((dat['fga'][i] - dat['fgm'][i]) \
+            - (dat['fta'][i] - dat['ftm'][i]) + dat['turnover'][i])) / dat['gp'][i]
 
     elif calcType == 'top-offensives':
         # prevent division by 0
         fga = dat['fga'][i] if dat['tpm'][i] != 0 else 1
 
         # calculate the value
-        amt = ((dat['pts'][i] + dat['asts'][i]) \
-        - (dat['turnover'][i] * 4)) \
+        amt = ((dat['pts'][i] + dat['asts'][i]) - (dat['turnover'][i] * 4)) \
         * (dat['fgm'][i] / fga)
 
     elif calcType == 'top-defensives':
         # calculate the value
-        amt = (dat['dreb'][i] + (dat['stl'][i] * 1.5)) \
-        + (dat['blk'][i] * 2)
+        amt = (dat['dreb'][i] + (dat['stl'][i] * 1.5)) + (dat['blk'][i] * 2)
 
     elif calcType == 'top-scorers':
         # calculate the value
@@ -135,9 +133,8 @@ def getCalculation(dat, calcType, i):
         tpa = dat['tpa'][i] if dat['tpa'][i] != 0 else 1
 
         # calculate the value
-        amt = ((dat['fgm'][i] / fga) * 2) \
-        + (dat['ftm'][i] / fta) \
-        + ((dat['tpm'][i] / tpa) * 3)
+        amt = ((dat['fgm'][i] / fga) * 2) + (dat['ftm'][i] / fta) \
+            + ((dat['tpm'][i] / tpa) * 3)
 
     elif calcType == 'top-3-shooters':
         # prevent division by 0
