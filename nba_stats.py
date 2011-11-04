@@ -1,12 +1,8 @@
-#-------------------------------------------------------------------------------
-# Name:        NBA Stats
 #
-# Author:      Stephen Hoerner
+#   NBA Stats
+#   Stephen Hoerner
+#   CSCD 110
 #
-# Created:     04/11/2011
-# Copyright:   (c) Stephen Hoerner 2011
-#-------------------------------------------------------------------------------
-#!/usr/bin/env python
 
 import sys
 
@@ -28,25 +24,25 @@ def main():
     while cmd != 0:
         print()
         if cmd == 1:
-            print(topPlayers(stats))
+            print(getTop(stats, 'top-players'))
         elif cmd == 2:
-            print(topOffensives(stats))
+            print(getTop(stats, 'top-offensives'))
         elif cmd == 3:
-            print(topDefensives(stats))
+            print(getTop(stats, 'top-defensives'))
         elif cmd == 4:
-            print(topScorers(stats))
+            print(getTop(stats, 'top-scorers'))
         elif cmd == 5:
-            print(topAssisters(stats))
+            print(getTop(stats, 'top-assists'))
         elif cmd == 6:
-            print(topStealers(stats))
+            print(getTop(stats, 'top-steals'))
         elif cmd == 7:
-            print(topRebounders(stats))
+            print(getTop(stats, 'top-rebounds'))
         elif cmd == 8:
-            print(topBlockers(stats))
+            print(getTop(stats, 'top-blocks'))
         elif cmd == 9:
-            print(topShooters(stats))
+            print(getTop(stats, 'top-shooters'))
         elif cmd == 10:
-            print(topThreeShooters(stats))
+            print(getTop(stats, 'top-3-shooters'))
         else:
             print('Invalid command!')
 
@@ -54,37 +50,7 @@ def main():
         cmd = getInt('Enter Command: ')
 
 
-def topPlayers(data): # returns top fifty players
-    return topFifty(data, getTop(data,'top-players'))
-
-def topOffensives(data): # returns top fifty offensive players
-    return topFifty(data, getTop(data,'top-offensives'))
-
-def topDefensives(data): # returns top fifty defensive players
-    return topFifty(data, getTop(data,'top-defensives'))
-
-def topScorers(data): # returns top fifty players for scoring
-    return topFifty(data, getTop(data,'top-scorers'))
-
-def topAssisters(data): # returns top fifty players for assisting
-    return topFifty(data, getTop(data,'top-assists'))
-
-def topStealers(data): # returns top fifty players for stealing
-    return topFifty(data, getTop(data,'top-steals'))
-
-def topRebounders(data): # returns top fifty players for rebounding
-    return topFifty(data, getTop(data,'top-rebounds'))
-
-def topBlockers(data): # returns top fifty players for blocking
-    return topFifty(data, getTop(data,'top-blocks'))
-
-def topShooters(data): # returns top fifty players for shooting
-    return topFifty(data, getTop(data,'top-shooters'))
-
-def topThreeShooters(data): # returns top fifty players for shooting 3-pointers
-    return topFifty(data, getTop(data,'top-3-shooters'))
-
-# returns a list of the best players for a given category
+# returns the top players (in a string) for a given category
 def getTop(data,calcType):
 
 #   PARAMETERS
@@ -103,7 +69,7 @@ def getTop(data,calcType):
         ids.append(data['id'][index])
         calc.append(getCalculation(data, calcType, index))
 
-    return combineAndSort(calc, ids)
+    return topFifty(data, combineAndSort(calc, ids))
 
 
 
@@ -128,7 +94,7 @@ def getCalculation(data, calcType, i):
 
     elif calcType == 'top-offensives':
         # prevent division by 0
-        fga = data['fga'][i] if data['tpm'][i] != 0 else -0.1
+        fga = data['fga'][i] if data['tpm'][i] != 0 else 1
 
         amt = ((data['pts'][i] + data['asts'][i]) \
         - (data['turnover'][i] * 4)) \
@@ -152,9 +118,9 @@ def getCalculation(data, calcType, i):
 
     elif calcType == 'top-shooters':
         # prevent division by 0
-        fga = data['fga'][i] if data['tpm'][i] != 0 else -0.1
-        fta = data['fta'][i] if data['fta'][i] != 0 else -0.1
-        tpa = data['tpa'][i] if data['tpa'][i] != 0 else -0.1
+        fga = data['fga'][i] if data['tpm'][i] != 0 else 1
+        fta = data['fta'][i] if data['fta'][i] != 0 else 1
+        tpa = data['tpa'][i] if data['tpa'][i] != 0 else 1
 
         amt = ((data['fgm'][i] / fga) * 2) \
         + (data['ftm'][i] / fta) \
@@ -162,7 +128,7 @@ def getCalculation(data, calcType, i):
 
     elif calcType == 'top-3-shooters':
         # prevent division by 0
-        tpa = data['tpa'][i] if data['tpa'][i] != 0 else -0.1
+        tpa = data['tpa'][i] if data['tpa'][i] != 0 else 1
 
         amt = data['tpm'][i] / tpa
 
@@ -293,6 +259,4 @@ def loadStats(filename):
         raise IOError('An error occured while loading the file.')
         return None
 
-
-if __name__ == '__main__':
-    main()
+main()
