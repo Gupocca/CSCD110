@@ -165,9 +165,8 @@ def combineAndSort(valueList, keyList):
 ##  result - list; contains final results
 ##  i - number; simple accumulator index
 
-    result = list(zip(valueList, keyList)) # zip into a tupled list [(a, b), ...]
-    result.sort()   # sorts by first value: the 'rating' numbers
-    result.reverse()    # reverses them so it's 1-50 rather than 50-1
+    result = list(zip(keyList, valueList)) # zip into a tupled list [('name', num), ...]
+    result.sort(key = lambda row: row[1], reverse = True)   # sorts by the 'rating numbers' backwards
 
     for i in range(len(result)):
         result[i] = list(result[i]) # convert tuples to lists
@@ -189,7 +188,7 @@ def topFifty(data, ranking):
     output = ''
 
     for i in range(50):
-        output += str(i + 1) + '. ' + ranking[i][1] + '\n'      # 'num. first last \n'
+        output += str(i + 1) + '. ' + ranking[i][0] + '\n'   # 'num. name \n'
 
     return output
 
