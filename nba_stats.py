@@ -28,6 +28,7 @@ def main():
 
     while cmd != 0:
         print()
+
         if cmd == 1:
             print(getTop(stats, 'top-players'))
         elif cmd == 2:
@@ -71,7 +72,7 @@ def getTop(data,calcType):
     ids  = []
 
     for index in range(len(data['id'])):
-        ids.append(data['id'][index])
+        ids.append(data['firstname'][index] + ' ' + data['lastname'][index])
         calc.append(getCalculation(data, calcType, index))
 
     return topFifty(data, combineAndSort(calc, ids))
@@ -93,7 +94,7 @@ def getCalculation(dat, calcType, i):
     amt = 0
 
     if calcType == 'top-players':
-        # calculate the value
+        # calculate the value ... a complicated value
         amt = ((dat['pts'][i] + dat['reb'][i] + dat['asts'][i] \
             + dat['stl'][i] + dat['blk'][i]) - ((dat['fga'][i] - dat['fgm'][i]) \
             - (dat['fta'][i] - dat['ftm'][i]) + dat['turnover'][i])) / dat['gp'][i]
@@ -117,6 +118,10 @@ def getCalculation(dat, calcType, i):
     elif calcType == 'top-assists':
         # calculate the value
         amt = dat['asts'][i]
+
+    elif calcType == 'top-rebounds':
+        # calculate the value
+        amt = dat['reb'][i]
 
     elif calcType == 'top-steals':
         # calculate the value
@@ -160,22 +165,22 @@ def combineAndSort(valueList, keyList):
 ##  result - list; contains final results
 ##  i - number; simple accumulator index
 
-    result = list(zip(valueList, keyList))
-    result.sort()
-    result.reverse()
+    result = list(zip(valueList, keyList)) # zip into a tupled list [(a, b), ...]
+    result.sort()   # sorts by first value: the 'rating' numbers
+    result.reverse()    # reverses them so it's 1-50 rather than 50-1
 
     for i in range(len(result)):
-        result[0] = list(result[0])
+        result[i] = list(result[i]) # convert tuples to lists
 
     return result
 
 
 # returns the first fifty player names in a given ID-list
-def topFifty(data, lst):
+def topFifty(data, ranking):
 
 #   PARAMETERS
 ##  data - dictionary; contains all the stat data
-##  lst - list; contains player ID's in whatever order desired
+##  ranking - list; contains player ID's in whatever order desired
 
 #   VARIABLES
 ##  output - string; contains output...
@@ -184,8 +189,7 @@ def topFifty(data, lst):
     output = ''
 
     for i in range(50):
-        tempID = data['id'].index(lst[i][1])
-        output += str(i+1) + '. ' + data['firstname'][tempID] + ' ' + data['lastname'][tempID] + '\n'
+        output += str(i + 1) + '. ' + ranking[i][1] + '\n'      # 'num. first last \n'
 
     return output
 
@@ -243,25 +247,25 @@ def loadStats(filename):
             file.readline() # skip the first line
 
             columns = ['id','firstname','lastname','leag','gp','minutes','pts','oreb','dreb',\
-            'reb','asts','stl','blk','turnover','pf','fga','fgm','fta','ftm','tpa','tpm']
+            'reb','asts','stl','blk','turnover','pf','fga','fgm','fta','ftm','tpa','tpm'] # define our columns
 
             data = {}
 
-            for id in columns:
+            for id in columns: # initiate columns within dict
                 data[id] = []
 
             while True:
-                line = file.readline().strip()
+                line = file.readline().strip() # current line; whitespace stripped
 
-                if (line == ''):
+                if (line == ''): # EOF
                     break
 
-                values = line.split(',')
+                values = line.split(',') # create list of values
 
                 for j in range(len(values)):
-                    if j > 3:
+                    if j > 3: # first 4 columns cannot be cast to ints
                         data[columns[j]].append(int(values[j]))
-                    else:
+                    else: # these are strings
                         data[columns[j]].append(values[j].strip())
 
             print('Loaded stats.')
@@ -270,4 +274,4 @@ def loadStats(filename):
         raise IOError('An error occured while loading the file.')
         return None
 
-main()
+main() # the all-important call.
