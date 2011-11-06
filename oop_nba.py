@@ -15,20 +15,19 @@ class Player:
 
     def __init__(self, v):
     #   PARAMETERS
-    ##  v (values) - list; contains the player's stats — must have length of 21 or throws exception
+    ##  v (values) - list; contains the player's stats â€” must have length of 21 or throws exception
 
     #   VARIABLES
     ##  val - dictionary; contains the stats
 
         # initiate a BIG dictionary
         try:
-            self.val = {'id': str(v[0]).strip(), 'firstname': str(v[1]).strip(), 'lastname': str(v[2]).strip(),        \
-            'leag': str(v[3]).strip(), 'gp': int(v[4]), 'minutes': int(v[5]), 'pts': int(v[6]),      \
-            'oreb': int(v[7]), 'dreb': int(v[8]), 'reb': int(v[9]), 'asts': int(v[10]),   \
-            'stl': int(v[11]), 'blk': int(v[12]), 'turnover': int(v[13]), 'pf': int(v[14]), \
-            'fga': int(v[15]), 'fgm': int(v[16]), 'fta': int(v[17]), 'ftm': int(v[18]),         \
-            'tpa': int(v[19]), 'tpm': int(v[20]) }
-            print(self.val['tpm'],'/',self.val['tpa'])
+            self.val = {'id': str(v[0]).strip(), 'firstname': str(v[1]).strip(),            \
+            'lastname': str(v[2]).strip(), 'leag': str(v[3]).strip(), 'gp': int(v[4]),      \
+            'minutes': int(v[5]), 'pts': int(v[6]), 'oreb': int(v[7]), 'dreb': int(v[8]),   \
+            'reb': int(v[9]), 'asts': int(v[10]), 'stl': int(v[11]), 'blk': int(v[12]),     \
+            'turnover': int(v[13]), 'pf': int(v[14]), 'fga': int(v[15]), 'fgm': int(v[16]), \
+            'fta': int(v[17]), 'ftm': int(v[18]), 'tpa': int(v[19]), 'tpm': int(v[20]) }
         except:
             raise ValueError('Invalid statistical values!')
 
@@ -46,17 +45,13 @@ class Player:
 
         if rankType == 'top-players':
             # calculate the value ... a complicated value
-            amt = ((self.val['pts'] + self.val['reb'] + self.val['asts'] \
+            amt = ((self.val['pts'] + self.val['reb'] + self.val['asts']                    \
                 + self.val['stl'] + self.val['blk']) - ((self.val['fga'] - self.val['fgm']) \
                 - (self.val['fta'] - self.val['ftm']) + self.val['turnover'])) / self.val['gp']
 
         elif rankType == 'top-offensives':
-            # prevent division by 0
-            fga = self.val['fga'] if self.val['tpm'] != 0 else 1
-
-            # calculate the value
-            amt = ((self.val['pts'] + self.val['asts']) - (self.val['turnover'] * 4)) \
-            * (self.val['fgm'] / fga)
+            amt = ((self.val['pts'] + self.val['asts']) - (self.val['turnover'] * 4))   \
+                * self.__shotRate(self.val['fgm'], self.val['fga'])
 
         elif rankType == 'top-defensives':
             amt = (self.val['dreb'] + (self.val['stl'] * 1.5)) + (self.val['blk'] * 2)
@@ -77,31 +72,23 @@ class Player:
             amt = self.val['blk']
 
         elif rankType == 'top-shooters':
-            # prevent division by 0
-            fga = self.val['fga'] if self.val['tpm'] != 0 else 1
-            fta = self.val['fta'] if self.val['fta'] != 0 else 1
-            tpa = self.val['tpa'] if self.val['tpa'] != 0 else 1
-
-            # calculate the value
-            amt = ((self.val['fgm'] / fga) * 2) + (self.val['ftm'] / fta) \
-                + ((self.val['tpm'] / tpa) * 3)
+            amt = (self.__shotRate(self.val['fgm'], self.val['fga']) * 2)      \
+                + self.__shotRate(self.val['ftm'], self.val['fta'])            \
+                + (self.__shotRate(self.val['tpm'], self.val['tpa']) * 3)
 
         elif rankType == 'top-3-shooters':
-            # prevent division by 0
-            tpa = self.val['tpa'] if self.val['tpa'] != 0 else 1
-
-            # calculate the value
-            amt = self.val['tpm'] / tpa
+            amt = self.__shotRate(self.val['tpm'], self.val['tpa'])
 
         return amt
-
-
 
     def get(self, valueID): # returns a value related to the player
         try:
             return self.val[valueID]
         except:
             return None
+
+    def __shotRate(self, made, attempted):
+        return 0 if (attempted == 0) else (made / attempted)
 
 
 def main():
@@ -178,7 +165,7 @@ def getTop(data, calcType):
     result = ''
 
     for i in range(50):
-        result += str(i+1) + '. ' + output[i][0] + ' - ' + str(output[i][1]) + '\n'   # 'num. name \n'
+        result += str(i+1) + '. ' + output[i][0] + ' \t - ' + str(output[i][1]) + '\n'   # 'num. name \n'
 
     return result
 
