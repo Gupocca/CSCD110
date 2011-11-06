@@ -1,15 +1,8 @@
-#-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
 #
-# Author:      Stephen
+#   NBA Stats
+#   Stephen Hoerner
+#   CSCD 110
 #
-# Created:     06/11/2011
-# Copyright:   (c) Stephen 2011
-# Licence:     <your licence>
-#-------------------------------------------------------------------------------
-#!/usr/bin/env python
-
 
 class Player:
 
