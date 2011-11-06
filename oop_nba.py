@@ -13,32 +13,34 @@
 
 class Player:
 
-    def __init__(self, idn, firstname, lastname, leag, gp, minutes, pts, oreb, dreb, reb, asts, stl, blk, turnover, pf, fga, fgm, fta, ftm, tpa, tpm):
-#   PARAMETERS
-##  *args - strings & ints; each contains a stat of the player
+    def __init__(self, v):
+    #   PARAMETERS
+    ##  v (values) - list; contains the player's stats — must have length of 21 or throws exception
 
-#   VARIABLES
-##  val - dictionary; contains the stats
+    #   VARIABLES
+    ##  val - dictionary; contains the stats
 
         # initiate a BIG dictionary
         try:
-            self.val = {'id': idn, 'firstname': firstname, 'lastname': lastname,        \
-            'leag': leag, 'gp': int(gp), 'minutes': int(minutes), 'pts': int(pts),      \
-            'oreb': int(oreb), 'dreb': int(dreb), 'reb': int(reb), 'asts': int(asts),   \
-            'stl': int(stl), 'blk': int(blk), 'turnover': int(turnover), 'pf': int(pf), \
-            'fga': int(fga), 'fgm': int(fgm), 'fta': int(fta), 'ftm': int(ftm),         \
-            'tpa': int(tpa), 'tpm': int(tpm) }
+            self.val = {'id': str(v[0]).strip(), 'firstname': str(v[1]).strip(), 'lastname': str(v[2]).strip(),        \
+            'leag': str(v[3]).strip(), 'gp': int(v[4]), 'minutes': int(v[5]), 'pts': int(v[6]),      \
+            'oreb': int(v[7]), 'dreb': int(v[8]), 'reb': int(v[9]), 'asts': int(v[10]),   \
+            'stl': int(v[11]), 'blk': int(v[12]), 'turnover': int(v[13]), 'pf': int(v[14]), \
+            'fga': int(v[15]), 'fgm': int(v[16]), 'fta': int(v[17]), 'ftm': int(v[18]),         \
+            'tpa': int(v[19]), 'tpm': int(v[20]) }
+            print(self.val['tpm'],'/',self.val['tpa'])
         except:
             raise ValueError('Invalid statistical values!')
 
 
     def getRank(self, rankType): # returns a rank-value for a given category
-#   PARAMETERS
-##  rankType - string; the calculation type to perform
 
-#   VARIABLES
-##  amt - number; contains the calculated result
-##  fga, fta, tpa - numbers; represent their corresponding values, but prevent division by zero
+    #   PARAMETERS
+    ##  rankType - string; the calculation type to perform
+
+    #   VARIABLES
+    ##  amt - number; contains the calculated result
+    ##  fga, fta, tpa - numbers; represent their corresponding values, but prevent division by zero
 
         amt = 0
 
@@ -103,6 +105,7 @@ class Player:
 
 
 def main():
+
 #   VARIABLES
 ##  stats - list; contains nifty players
 ##  cmd - string; command intput from user
@@ -150,9 +153,39 @@ def main():
         cmd = getInt('Enter Command: ')
 
 
+# returns the top players (via a string) for a given category
+def getTop(data, calcType):
+
+#   PARAMETERS
+##  data - dictionary; contains all the stat data
+##  calcType - string; the category of operation to perform
+
+#   VARIABLES
+##  output - list; contains tuples in the form (name, rating)
+##  name - string; player's name in 'Last, First' format
+##  tup - tuple; holds player name and their rating
+##  i - numbers; accumulators which represent a single player
+##  result - string; the accumulator for the resulting data
+
+    output = []
+
+    for i in range(len(data)):
+        name = data[i].get('lastname') + ', ' + data[i].get('firstname')
+        tup = (name, data[i].getRank(calcType))
+        output.append(tup)
+
+    output.sort(key = lambda val: val[1], reverse = True)
+    result = ''
+
+    for i in range(50):
+        result += str(i+1) + '. ' + output[i][0] + ' - ' + str(output[i][1]) + '\n'   # 'num. name \n'
+
+    return result
+
+
 def getInt(prompt):
 #   PARAMETERS
-## prompt: string, countains user input prompt
+##  prompt: string; the prompt for user input
 
     try:
         return int(input(prompt))
@@ -184,40 +217,31 @@ def showMenu():
 def loadStats(filename):
 
 #   PARAMETERS
-##  filename - string; the file to open
+##  filename - string; file to open
 
 #   VARIABLES
-##  file - handle; represents the file
-##  columns - list; the columns to use
-##  data - dictionary; accumulates all the data
+##  file - handle; the file
+##  data - list; accumulates Player()'s
 ##  line - string; contains the value of a line
-##  values - list; contains individual values of a list
 
     try:
         with open(filename, 'r') as file:
             file.readline() # skip the first line
-
             data = []
+
             while True:
                 line = file.readline().strip() # current line; whitespace stripped
 
                 if (line == ''): # EOF
                     break
 
-                values = line.split(',') # create list of values
-
-                for j in range(len(values)):
-                    if j > 3: # first 4 columns cannot be cast to ints
-                        data[columns[j]].append(int(values[j]))
-                    else: # these are strings
-                        data[columns[j]].append(values[j].strip())
+                data.append(Player(line.split(','))) # create player with the values
 
             print('Loaded stats.')
             return data
     except:
         raise IOError('An error occured while loading the file.')
         return None
-
 
 
 if __name__ == '__main__':
