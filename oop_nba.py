@@ -15,12 +15,12 @@ class Player:
 
         # initiate a BIG dictionary
         try:
-            self.val = {'id': str(v[0]).strip(), 'firstname': str(v[1]).strip(),            \
-            'lastname': str(v[2]).strip(), 'leag': str(v[3]).strip(), 'gp': int(v[4]),      \
-            'minutes': int(v[5]), 'pts': int(v[6]), 'oreb': int(v[7]), 'dreb': int(v[8]),   \
-            'reb': int(v[9]), 'asts': int(v[10]), 'stl': int(v[11]), 'blk': int(v[12]),     \
-            'turnover': int(v[13]), 'pf': int(v[14]), 'fga': int(v[15]), 'fgm': int(v[16]), \
-            'fta': int(v[17]), 'ftm': int(v[18]), 'tpa': int(v[19]), 'tpm': int(v[20]) }
+            self.val = { 'id': str(v[0]).strip(), 'firstname': str(v[1]).strip(),               \
+            'lastname': str(v[2]).strip(), 'leag': str(v[3]).strip(),       'gp':   int(v[4]),  \
+            'minutes':  int(v[5]),  'pts':  int(v[6]),  'oreb': int(v[7]),  'dreb': int(v[8]),  \
+            'reb':      int(v[9]),  'asts': int(v[10]), 'stl':  int(v[11]), 'blk':  int(v[12]), \
+            'turnover': int(v[13]), 'pf':   int(v[14]), 'fga':  int(v[15]), 'fgm':  int(v[16]), \
+            'fta':      int(v[17]), 'ftm':  int(v[18]), 'tpa':  int(v[19]), 'tpm':  int(v[20]) }
         except:
             raise ValueError('Invalid statistical values!')
 
