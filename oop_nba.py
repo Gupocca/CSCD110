@@ -2,7 +2,7 @@
 #   NBA Stats
 #   Stephen Hoerner
 #   CSCD 110
-#
+##  (133 lines according to CLOC)
 
 class Player:
 
@@ -38,13 +38,13 @@ class Player:
 
         if rankType == 'top-players':
             # calculate the value ... a complicated value
-            amt = self.__shotRate(((self.val['pts'] + self.val['reb'] + self.val['asts']    \
+            amt = self.__safeDivide(((self.val['pts'] + self.val['reb'] + self.val['asts']    \
                 + self.val['stl'] + self.val['blk']) - ((self.val['fga'] - self.val['fgm']) \
                 - (self.val['fta'] - self.val['ftm']) + self.val['turnover'])), self.val['gp'])
 
         elif rankType == 'top-offensives':
             amt = ((self.val['pts'] + self.val['asts']) - (self.val['turnover'] * 4))   \
-                * self.__shotRate(self.val['fgm'], self.val['fga'])
+                * self.__safeDivide(self.val['fgm'], self.val['fga'])
 
         elif rankType == 'top-defensives':
             amt = (self.val['dreb'] + (self.val['stl'] * 1.5)) + (self.val['blk'] * 2)
@@ -65,12 +65,12 @@ class Player:
             amt = self.val['blk']
 
         elif rankType == 'top-shooters':
-            amt = (self.__shotRate(self.val['fgm'], self.val['fga']) * 2)      \
-                + self.__shotRate(self.val['ftm'], self.val['fta'])            \
-                + (self.__shotRate(self.val['tpm'], self.val['tpa']) * 3)
+            amt = (self.__safeDivide(self.val['fgm'], self.val['fga']) * 2)      \
+                + self.__safeDivide(self.val['ftm'], self.val['fta'])            \
+                + (self.__safeDivide(self.val['tpm'], self.val['tpa']) * 3)
 
         elif rankType == 'top-3-shooters':
-            amt = self.__shotRate(self.val['tpm'], self.val['tpa'])
+            amt = self.__safeDivide(self.val['tpm'], self.val['tpa'])
 
         return amt
 
@@ -80,7 +80,7 @@ class Player:
         except:
             return None
 
-    def __shotRate(self, made, attempted):
+    def __safeDivide(self, made, attempted):
         return 0 if (attempted == 0) else (made / attempted)
 
 
@@ -158,7 +158,7 @@ def getTop(data, calcType):
     result = ''
 
     for i in range(50):
-        result += str(i+1) + '. ' + output[i][0] + ' \t - ' + str(output[i][1]) + '\n'   # 'num. name \n'
+        result += str(i+1) + '. ' + output[i][0] + '\n'   # 'num. name \n'
 
     return result
 
