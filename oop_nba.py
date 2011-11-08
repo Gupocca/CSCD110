@@ -38,9 +38,9 @@ class Player:
 
         if rankType == 'top-players':
             # calculate the value ... a complicated value
-            amt = self.__shotRate((self.val['pts'] + self.val['reb'] + self.val['asts']     \
+            amt = self.__shotRate(((self.val['pts'] + self.val['reb'] + self.val['asts']    \
                 + self.val['stl'] + self.val['blk']) - ((self.val['fga'] - self.val['fgm']) \
-                - (self.val['fta'] - self.val['ftm']) + self.val['turnover']), self.val['gp'])
+                - (self.val['fta'] - self.val['ftm']) + self.val['turnover'])), self.val['gp'])
 
         elif rankType == 'top-offensives':
             amt = ((self.val['pts'] + self.val['asts']) - (self.val['turnover'] * 4))   \
