@@ -8,7 +8,7 @@ class Player:
 
     def __init__(self, v):
     #   PARAMETERS
-    ##  v (values) - list; contains the player's stats â€” must have length of 21 or throws exception
+    ##  v (values) - list; contains the player's stats - must have length of 21 or throws exception
 
     #   VARIABLES
     ##  val - dictionary; contains the stats
@@ -38,9 +38,9 @@ class Player:
 
         if rankType == 'top-players':
             # calculate the value ... a complicated value
-            amt = ((self.val['pts'] + self.val['reb'] + self.val['asts']                    \
+            amt = self.__shotRate((self.val['pts'] + self.val['reb'] + self.val['asts']     \
                 + self.val['stl'] + self.val['blk']) - ((self.val['fga'] - self.val['fgm']) \
-                - (self.val['fta'] - self.val['ftm']) + self.val['turnover'])) / self.val['gp']
+                - (self.val['fta'] - self.val['ftm']) + self.val['turnover']), self.val['gp'])
 
         elif rankType == 'top-offensives':
             amt = ((self.val['pts'] + self.val['asts']) - (self.val['turnover'] * 4))   \
