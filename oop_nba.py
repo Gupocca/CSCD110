@@ -24,65 +24,11 @@ class Player:
         except:
             raise ValueError('Invalid statistical values!')
 
-
-    def getRank(self, rankType): # returns a rank-value for a given category
-
-    #   PARAMETERS
-    ##  rankType - string; the calculation type to perform
-
-    #   VARIABLES
-    ##  amt - number; contains the calculated result
-    ##  fga, fta, tpa - numbers; represent their corresponding values, but prevent division by zero
-
-        amt = 0
-
-        if rankType == 'top-players':
-            # calculate the value ... a complicated value
-            amt = self.__safeDivide(((self.val['pts'] + self.val['reb'] + self.val['asts']    \
-                + self.val['stl'] + self.val['blk']) - ((self.val['fga'] - self.val['fgm']) \
-                - (self.val['fta'] - self.val['ftm']) + self.val['turnover'])), self.val['gp'])
-
-        elif rankType == 'top-offensives':
-            amt = ((self.val['pts'] + self.val['asts']) - (self.val['turnover'] * 4))   \
-                * self.__safeDivide(self.val['fgm'], self.val['fga'])
-
-        elif rankType == 'top-defensives':
-            amt = (self.val['dreb'] + (self.val['stl'] * 1.5)) + (self.val['blk'] * 2)
-
-        elif rankType == 'top-scorers':
-            amt = self.val['pts']
-
-        elif rankType == 'top-assists':
-            amt = self.val['asts']
-
-        elif rankType == 'top-rebounds':
-            amt = self.val['reb']
-
-        elif rankType == 'top-steals':
-            amt = self.val['stl']
-
-        elif rankType == 'top-blocks':
-            amt = self.val['blk']
-
-        elif rankType == 'top-shooters':
-            amt = (self.__safeDivide(self.val['fgm'], self.val['fga']) * 2)      \
-                + self.__safeDivide(self.val['ftm'], self.val['fta'])            \
-                + (self.__safeDivide(self.val['tpm'], self.val['tpa']) * 3)
-
-        elif rankType == 'top-3-shooters':
-            amt = self.__safeDivide(self.val['tpm'], self.val['tpa'])
-
-        return amt
-
     def get(self, valueID): # returns a value related to the player
         try:
             return self.val[valueID]
         except:
             return None
-
-    def __safeDivide(self, made, attempted):
-        return 0 if (attempted == 0) else (made / attempted)
-
 
 def main():
 
@@ -106,26 +52,10 @@ def main():
     while cmd != 0:
         print()
 
-        if cmd == 1:
-            print(getTop(stats, 'top-players'))
-        elif cmd == 2:
-            print(getTop(stats, 'top-offensives'))
-        elif cmd == 3:
-            print(getTop(stats, 'top-defensives'))
-        elif cmd == 4:
-            print(getTop(stats, 'top-scorers'))
-        elif cmd == 5:
-            print(getTop(stats, 'top-assists'))
-        elif cmd == 6:
-            print(getTop(stats, 'top-steals'))
-        elif cmd == 7:
-            print(getTop(stats, 'top-rebounds'))
-        elif cmd == 8:
-            print(getTop(stats, 'top-blocks'))
-        elif cmd == 9:
-            print(getTop(stats, 'top-shooters'))
-        elif cmd == 10:
-            print(getTop(stats, 'top-3-shooters'))
+        if cmd == None:
+            print('Invalid command!')
+        elif cmd >= 1 and cmd <= 10 and cmd % 1 == 0: # is it an int?
+            print(getTop(stats, cmd-1))
         else:
             print('Invalid command!')
 
@@ -147,18 +77,26 @@ def getTop(data, calcType):
 ##  i - numbers; accumulators which represent a single player
 ##  result - string; the accumulator for the resulting data
 
-    output = []
+    output = data
+    func = None
 
-    for i in range(len(data)):
-        name = data[i].get('lastname') + ', ' + data[i].get('firstname')
-        tup = (name, data[i].getRank(calcType))
-        output.append(tup)
+    if   calcType == 0:   func = lambda x: safeDiv((x.get('pts')+x.get('reb')+x.get('asts')+x.get('stl')+x.get('blk')-((x.get('fga')-x.get('fgm'))-(x.get('fta')-x.get('ftm'))+x.get('turnover'))), x.get('gp'))
+    elif calcType == 1: func = lambda x: ((x.get('pts')+x.get('asts'))-(x.get('turnover')*4))*safeDiv(x.get('fgm'), x.get('fga'))
+    elif calcType == 2: func = lambda x: (x.get('dreb')+(x.get('stl')*1.5))+(x.get('blk')*2)
+    elif calcType == 3: func = lambda x: x.get('pts')
+    elif calcType == 4: func = lambda x: x.get('asts')
+    elif calcType == 5: func = lambda x: x.get('reb')
+    elif calcType == 6: func = lambda x: x.get('stl')
+    elif calcType == 7: func = lambda x: x.get('blk')
+    elif calcType == 8: func = lambda x: (safeDiv(x.get('fgm'), x.get('fga'))*2)+safeDiv(x.get('ftm'), x.get('fta'))+(safeDiv(x.get('tpm'), x.get('tpa'))*3)
+    elif calcType == 9: func = lambda x: safeDiv(x.get('tpm'), x.get('tpa'))
+    else: return None
 
-    output.sort(key = lambda val: val[1], reverse = True)
+    output.sort(key=func, reverse=True)
     result = ''
 
     for i in range(50):
-        result += str(i+1) + '. ' + output[i][0] + '\n'   # 'num. name \n'
+        result += str(i+1) + '. ' + output[i].get('lastname') + ', ' + output[i].get('firstname') + '\n'   # 'num. name \n'
 
     return result
 
@@ -172,6 +110,8 @@ def getInt(prompt):
     except:
         return None
 
+def safeDiv(num, denom):
+    return 0 if (denom == 0) else (num / denom)
 
 # displays the menu
 def showMenu():
@@ -223,6 +163,4 @@ def loadStats(filename):
         raise IOError('An error occured while loading the file.')
         return None
 
-
-if __name__ == '__main__':
-    main()
+main()
