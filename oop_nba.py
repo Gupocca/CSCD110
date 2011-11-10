@@ -3,7 +3,7 @@
 #   Stephen Hoerner
 #   CSCD 110
 ##  (133 lines according to CLOC)
-
+import sys
 class Player:
 
     def __init__(self, v):
@@ -15,12 +15,10 @@ class Player:
 
         # initiate a BIG dictionary
         try:
-            self.val = { 'id': str(v[0]).strip(), 'firstname': str(v[1]).strip(),               \
-            'lastname': str(v[2]).strip(), 'leag': str(v[3]).strip(),       'gp':   int(v[4]),  \
-            'minutes':  int(v[5]),  'pts':  int(v[6]),  'oreb': int(v[7]),  'dreb': int(v[8]),  \
-            'reb':      int(v[9]),  'asts': int(v[10]), 'stl':  int(v[11]), 'blk':  int(v[12]), \
-            'turnover': int(v[13]), 'pf':   int(v[14]), 'fga':  int(v[15]), 'fgm':  int(v[16]), \
-            'fta':      int(v[17]), 'ftm':  int(v[18]), 'tpa':  int(v[19]), 'tpm':  int(v[20]) }
+            tmpList = ['id','firstname','lastname','leag','gp','minutes','pts','oreb','dreb','reb','asts','stl','blk','turnover','pf','fga','fgm','fta','ftm','tpa','tpm']
+            self.val = {}
+            for i in range(4): self.val[tmpList[i]] = str(v[i]).strip()
+            for i in range(4,21): self.val[tmpList[i]] = int(v[i])
         except:
             raise ValueError('Invalid statistical values!')
 
@@ -68,19 +66,18 @@ def getTop(data, calcType):
 
 #   PARAMETERS
 ##  data - dictionary; contains all the stat data
-##  calcType - string; the category of operation to perform
+##  calcType - int; the index of the operation to perform
 
 #   VARIABLES
-##  output - list; contains tuples in the form (name, rating)
-##  name - string; player's name in 'Last, First' format
-##  tup - tuple; holds player name and their rating
-##  i - numbers; accumulators which represent a single player
+##  func - lambda function; used to sort the players
+##  output - list; contains players for output
+##  i - numbers; accumulator which represents a single player
 ##  result - string; the accumulator for the resulting data
 
     output = data
     func = None
 
-    if   calcType == 0:   func = lambda x: safeDiv((x.get('pts')+x.get('reb')+x.get('asts')+x.get('stl')+x.get('blk')-((x.get('fga')-x.get('fgm'))-(x.get('fta')-x.get('ftm'))+x.get('turnover'))), x.get('gp'))
+    if   calcType == 0: func = lambda x: safeDiv((x.get('pts')+x.get('reb')+x.get('asts')+x.get('stl')+x.get('blk')-((x.get('fga')-x.get('fgm'))-(x.get('fta')-x.get('ftm'))+x.get('turnover'))), x.get('gp'))
     elif calcType == 1: func = lambda x: ((x.get('pts')+x.get('asts'))-(x.get('turnover')*4))*safeDiv(x.get('fgm'), x.get('fga'))
     elif calcType == 2: func = lambda x: (x.get('dreb')+(x.get('stl')*1.5))+(x.get('blk')*2)
     elif calcType == 3: func = lambda x: x.get('pts')
