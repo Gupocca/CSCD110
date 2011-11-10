@@ -15,8 +15,7 @@ class Player:
 
         # initiate a BIG dictionary
         try:
-            tmpList = ['id','firstname','lastname','leag','gp','minutes','pts','oreb','dreb','reb','asts','stl','blk','turnover','pf','fga','fgm','fta','ftm','tpa','tpm']
-            self.val = {}
+            tmpList = ['id','firstname','lastname','leag','gp','minutes','pts','oreb','dreb','reb','asts','stl','blk','turnover','pf','fga','fgm','fta','ftm','tpa','tpm']; self.val = {}
             for i in range(4):      self.val[tmpList[i]] = str(vals[i]).strip()
             for i in range(4,21):   self.val[tmpList[i]] = int(vals[i])
         except: raise ValueError('Invalid statistical values!')
@@ -34,16 +33,11 @@ def main():
 ##  cmd - string; command intput from user
 
     try: stats = loadStats('player_career.txt')
-    except IOError as e:
-        print(e)
-        sys.exit(0)
-    except:
-        print('An unknown error occured.')
-        sys.exit(0)
+    except IOError as e: print(e); sys.exit(0)
+    except: print('An unknown error occured.'); sys.exit(0)
 
     # menu selection
-    showMenu()
-    cmd = getInt('Enter Command: ')
+    showMenu(); cmd = getInt('Enter Command: ')
 
     while cmd != 0:
         print()
@@ -52,8 +46,7 @@ def main():
         elif (cmd >= 1 and cmd <= 10 and cmd % 1 == 0): print(getTop(stats, cmd-1)) # is it an int?
         else: print('Invalid command!')
 
-        showMenu()
-        cmd = getInt('Enter Command: ')
+        showMenu(); cmd = getInt('Enter Command: ')
 
 
 # returns the top players (via a string) for a given category
@@ -70,8 +63,7 @@ def getTop(data, calcType):
 ##  i - numbers; accumulator which represents a single player
 ##  result - string; the accumulator for the resulting data
 
-    output  = data
-    safeDiv = lambda n, d: 0 if (d==0) else (n/d)
+    output  = data; safeDiv = lambda n, d: 0 if (d==0) else (n/d)
 
     if   calcType == 0: func = lambda x: safeDiv((x.get('pts')+x.get('reb')+x.get('asts')+x.get('stl')+x.get('blk')-((x.get('fga')-x.get('fgm'))-(x.get('fta')-x.get('ftm'))+x.get('turnover'))), x.get('gp'))
     elif calcType == 1: func = lambda x: ((x.get('pts')+x.get('asts'))-(x.get('turnover')*4))*safeDiv(x.get('fgm'), x.get('fga'))
@@ -85,8 +77,7 @@ def getTop(data, calcType):
     elif calcType == 9: func = lambda x: safeDiv(x.get('tpm'), x.get('tpa'))
     else: return None
 
-    output.sort(key=func, reverse=True)
-    result = ''
+    output.sort(key=func, reverse=True); result = ''
 
     for i in range(50): result += str(i+1) + '. ' + output[i].get('lastname') + ', ' + output[i].get('firstname') + '\n'   # 'num. name \n'
 
@@ -103,8 +94,7 @@ def getInt(prompt):
 def showMenu():
     options = ['players','offensive players','defensive players','scorers','assisters','stealers','rebounders','blockers','shooters','three-point shooters']
     print('\n- - - - - - - - - - - -')
-    for opt in range(len(options)):
-        print(opt + 1, '.\tList top 50 ', options[opt], sep='')
+    for opt in range(len(options)): print(opt + 1, '.\tList top 50 ', options[opt], sep='')
     print('\n0.\tExit\n- - - - - - - - - - - -\n')
 
 
@@ -121,8 +111,7 @@ def loadStats(filename):
 
     try:
         with open(filename, 'r') as file:
-            file.readline() # skip the first line
-            data = []
+            file.readline(); data = [] # skip the first line
 
             while True:
                 line = file.readline().strip() # current line; whitespace stripped
@@ -131,10 +120,7 @@ def loadStats(filename):
 
                 data.append(Player(line.split(','))) # create player with the values
 
-            print('Loaded stats.')
-            return data
-    except:
-        raise IOError('An error occured while loading the file.')
-        return None
+            print('Loaded stats.'); return data
+    except: raise IOError('An error occured while loading the file.'); return None
 
 main()
