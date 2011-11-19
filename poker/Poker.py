@@ -3,24 +3,6 @@ from Card import *
 import re
 
 def main():
-    # your main will look totally different
-    # this is for testing the Card class from Card.py
-    # it should shuffle a random deck of cards
-##
-##
-##    hnd = []
-##    for i in range(52):
-##        potential = Card()
-##        while potential in hnd:
-##            potential = Card()
-##        hnd.append(potential)
-##    print("Random:",hnd)
-##    hnd.sort()
-##    print("Sorted:",hnd)
-
-
-    # skeleton for your main
-
     # get number of hands from user
     handNum = 0
     while handNum == 0 or handNum == None:
