@@ -44,7 +44,7 @@ def main():
         elif isThreeOfAKind(hand): score['threeOfAKind']  += 1; data['threeOfAKind'].append(hand)
         elif isTwoPair(hand):      score['twoPairs']      += 1; data['twoPairs'].append(hand)
         elif isOnePair(hand):      score['onePair']       += 1; data['onePair'].append(hand)
-        elif isHighCard(hand):     score['highCard']      += 1; data['highCard'].append(hand)
+        else: score['highCard'] += 1; data['highCard'].append(hand)
 
     print()
     cache = 'Hands drawn: ' + str(handNum) + '\n\n'
@@ -63,15 +63,7 @@ def main():
     cache = cache.replace('\t',' ')
     writeResults(cache, data)
 
-    # Print out results for each scoring category and the total number of hands drawn
-    # format:
-    #           Total number of Hands Drawn: 100,000
-    #
-    #          Straight Flush: X (xx%)
-    #          Four of a Kind: X (xx%)
-    #          Full House:     X (xx%)
-    #           etc...
-    #
+#-----------------------------------------------
 
 def getScore(title, score, total, tabs = 0):
     return str(title) + ':' + '\t' * tabs + str(score) + ' (' + str(score/total*100) + '%)\n'
@@ -86,10 +78,8 @@ def DrawHand():
         hand.append(card)
     return hand
 
-# You will need to populate the following functions to determine what the top
-# scoring category for your hands are.
-# Remember, check these in the highest scoring hand to the lowest.  Otherwise,
-# you will incorrectly pick the scoring category.
+#-----------------------------------------------
+
 def isStraightFlush(hand):
     hand.sort()
 
@@ -99,26 +89,14 @@ def isStraightFlush(hand):
         if hand[c].rank != hand[0].rank + c:
             return False
 
-    #print("Straight Flush:", hand)
     return True
     # returns True if straight flush, otherwise False
-
-
 
 def isFourOfAKind(hand):
     return hasNumMatchingCards(hand, 4)
     # returns True if Four of a Kind, otherwise False
 
-
 def isFullHouse(hand):
-##    ranks = []
-##    flag = False
-##    tmpHand = hand
-##
-##    if (hasNumMatchingCards(hand, 2))
-##
-##    return True
-
     tmpHand = []
     tmpHand.extend(hand)
 
@@ -126,37 +104,9 @@ def isFullHouse(hand):
     tmpHand = removeMatchingCards(tmpHand,2)
 
     if (len(tmpHand) == 0):
-        #print(hand)
         return True
 
     return False
-
-def hasNumMatchingCards(hand, number):
-    ranks = []
-    for card in hand:
-        ranks.append(card.rank)
-    for i in range(1,13):
-        if ranks.count(i) == number:
-            return True
-    return False
-
-def removeMatchingCards(hand, number):
-    ranks = []
-    match = 0
-
-    for card in hand:
-        ranks.append(card.rank)
-    for i in range(1,13):
-        if ranks.count(i) == number:
-            match = i
-
-    if match == 0:
-        return hand
-
-    for i in range(number):
-        hand.remove(hand[ranks.index(match)])
-
-    return hand
 
 def isFlush(hand):
     for i in range(len(hand)-1):
@@ -188,14 +138,32 @@ def isTwoPair(hand):
     return False
     # returns True if Two Pair, otherwise False
 
-
 def isOnePair(hand):
     return hasNumMatchingCards(hand, 2)
 
-def isHighCard(hand):
-    hand.sort()
-    ## hand[4]
-    return True
+#-----------------------------------------------
+def hasNumMatchingCards(hand, number):
+    ranks = []
+    for card in hand:
+        ranks.append(card.rank)
+    for i in range(1,13):
+        if ranks.count(i) == number:
+            return True
+    return False
+
+def removeMatchingCards(hand, number):
+    ranks = []
+    match = 0
+
+    for card in hand:
+        ranks.append(card.rank)
+    for i in range(1,13):
+        if ranks.count(i) == number:
+            match = i
+    if match != 0:
+        for i in range(number):
+            hand.remove(hand[ranks.index(match)])
+    return hand
 #-----------------------------------------------
 def writeResults(stats, results):
     with open('results.txt', 'w') as f:
@@ -218,7 +186,5 @@ def intInput():
         return int(input('Number of hands: '))
     except:
         return None
-    pass
-
 
 main()
