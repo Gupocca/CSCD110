@@ -37,29 +37,31 @@ def main():
 
         # send hand to scoring methods
         if isStraightFlush(hand):  score['straightFlush'] += 1; data['straightFlush'].append(hand)
-        elif isFourOfAKind(hand):  score['fourOfAKind']    += 1; data['fourOfAKind'].append(hand)
+        elif isFourOfAKind(hand):  score['fourOfAKind']   += 1; data['fourOfAKind'].append(hand)
         elif isFullHouse(hand):    score['fullHouse']     += 1; data['fullHouse'].append(hand)
         elif isFlush(hand):        score['flush']         += 1; data['flush'].append(hand)
         elif isStraight(hand):     score['straight']      += 1; data['straight'].append(hand)
-        elif isThreeOfAKind(hand): score['threeOfAKind']   += 1; data['threeOfAKind'].append(hand)
-        elif isTwoPair(hand):      score['twoPairs']       += 1; data['twoPairs'].append(hand)
+        elif isThreeOfAKind(hand): score['threeOfAKind']  += 1; data['threeOfAKind'].append(hand)
+        elif isTwoPair(hand):      score['twoPairs']      += 1; data['twoPairs'].append(hand)
         elif isOnePair(hand):      score['onePair']       += 1; data['onePair'].append(hand)
         elif isHighCard(hand):     score['highCard']      += 1; data['highCard'].append(hand)
-    
 
-    print('Total number of Hands Drawn:', handNum)
     print()
-    printScore('Straight Flush',  score['straightFlush'], handNum, 1)
-    printScore('Four of a Kind',  score['fourOfAKind'],    handNum, 1)
-    printScore('Full House',      score['fullHouse'],     handNum, 2)
-    printScore('Flush',           score['flush'],         handNum, 3)
-    printScore('Straight',        score['straight'],      handNum, 2)
-    printScore('Three of a Kind', score['threeOfAKind'],   handNum)
-    printScore('Two Pairs',       score['twoPairs'],       handNum, 2)
-    printScore('One Pair',        score['onePair'],       handNum, 2)
-    printScore('High Card',       score['highCard'],      handNum, 2)
+    cache = 'Hands drawn: ' + str(handNum) + '\n\n'
 
-    writeResults('nuthin', data)
+    cache += getScore('Straight Flush',  score['straightFlush'], handNum, 1)
+    cache += getScore('Four of a Kind',  score['fourOfAKind'],   handNum, 1)
+    cache += getScore('Full House',      score['fullHouse'],     handNum, 2)
+    cache += getScore('Flush',           score['flush'],         handNum, 3)
+    cache += getScore('Straight',        score['straight'],      handNum, 2)
+    cache += getScore('Three of a Kind', score['threeOfAKind'],  handNum)
+    cache += getScore('Two Pairs',       score['twoPairs'],      handNum, 2)
+    cache += getScore('One Pair',        score['onePair'],       handNum, 2)
+    cache += getScore('High Card',       score['highCard'],      handNum, 2)
+
+    print(cache)
+    cache = cache.replace('\t',' ')
+    writeResults(cache, data)
 
     # Print out results for each scoring category and the total number of hands drawn
     # format:
@@ -71,8 +73,8 @@ def main():
     #           etc...
     #
 
-def printScore(title, score, total, tabs = 0):
-    print(str(title) + ':' + '\t' * tabs, score, '(' + str(score/total*100) + '%)')
+def getScore(title, score, total, tabs = 0):
+    return str(title) + ':' + '\t' * tabs + str(score) + ' (' + str(score/total*100) + '%)\n'
 
 def DrawHand():
     # randomly draw hand, ensure not duplicates, returns hand to main
@@ -198,10 +200,11 @@ def isHighCard(hand):
 def writeResults(stats, results):
     with open('results.txt', 'w') as f:
         # writes the results to the disk file "results.txt"
-        f.write('GENERAL STATS:\n' + stats + '\n\n')
+        f.write('\nGENERAL STATS:\n\n' + stats + '\n')
         for key in results.keys():
+            f.write('-' * 20 + '\n\n')
             title = re.sub("([A-Z])"," \g<0>", key)
-            f.write(title.upper() + ':\n')
+            f.write(title.upper() + ':\n\n')
             if len(results[key]) == 0:
                 f.write('No results.\n\n')
                 continue
