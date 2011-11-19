@@ -42,4 +42,4 @@ else: # ideal execution, no errors
     print('Surface area of sphere:  ' + str(sphereSurfaceArea(radius)))
     print('Volume of sphere:        ' + str(sphereVolume(radius)))
 
-    # Voilà.
+    # Voila.

@@ -47,7 +47,10 @@ def main():
         print()
 
         if (cmd == None): print('Invalid command!')
-        elif (cmd >= 1 and cmd <= 10 and cmd % 1 == 0): print(getTop(stats, cmd - 1)) # is it an int?
+
+        elif (cmd >= 1 and cmd <= 10 and cmd % 1 == 0):
+            print(getTop(stats, cmd - 1)) # is it an int?
+
         else: print('Invalid command!')
 
         showMenu()
@@ -75,8 +78,8 @@ def getTop(data, calcType):
     elif (calcType == 2): func = lambda x: (x.get('dreb') + (x.get('stl') * 1.5)) + (x.get('blk') * 2)
     elif (calcType == 3): func = lambda x: x.get('pts')
     elif (calcType == 4): func = lambda x: x.get('asts')
-    elif (calcType == 5): func = lambda x: x.get('reb')
-    elif (calcType == 6): func = lambda x: x.get('stl')
+    elif (calcType == 5): func = lambda x: x.get('stl')
+    elif (calcType == 6): func = lambda x: x.get('reb')
     elif (calcType == 7): func = lambda x: x.get('blk')
     elif (calcType == 8): func = lambda x: (safeDiv(x.get('fgm'), x.get('fga')) * 2) + safeDiv(x.get('ftm'), x.get('fta')) + (safeDiv(x.get('tpm'), x.get('tpa')) * 3)
     elif (calcType == 9): func = lambda x: safeDiv(x.get('tpm'), x.get('tpa'))

@@ -1,5 +1,6 @@
 # this allows for direct addressing Card() instead of Card.Card() construction
 from Card import *
+import re
 
 def main():
     # your main will look totally different
@@ -26,16 +27,8 @@ def main():
         handNum = intInput()
 
     # initialize accumulator variables for each hand scoring category
-    score = {}
-
-    score['straightFlush']  = 0
-    score['fourOfKind']     = 0
-    score['fullHouse']      = 0
-    score['flush']          = 0
-    score['threeOfKind']    = 0
-    score['twoPair']        = 0
-    score['onePair']        = 0
-
+    score = {'straightFlush': 0, 'fourOfAKind': 0, 'fullHouse': 0, 'flush': 0, 'straight': 0, 'threeOfAKind': 0, 'twoPairs': 0, 'onePair': 0, 'highCard': 0}
+    data  = {'straightFlush': [], 'fourOfAKind': [], 'fullHouse': [], 'flush': [], 'straight': [], 'threeOfAKind': [], 'twoPairs': [], 'onePair': [], 'highCard': []}
 
     # loop for number of hands
     for h in range(handNum):
@@ -43,24 +36,30 @@ def main():
         hand = DrawHand()
 
         # send hand to scoring methods
-        if isStraightFlush(hand):  score['straightFlush'] += 1
-        elif isFourOfAKind(hand):  score['fourOfKind']    += 1
-        elif isFullHouse(hand):    score['fullHouse']     += 1
-        elif isFlush(hand):        score['flush']         += 1
-        elif isThreeOfAKind(hand): score['threeOfKind']   += 1
-        elif isTwoPair(hand):      score['twoPair']       += 1
-        elif isOnePair(hand):      score['onePair']       += 1
+        if isStraightFlush(hand):  score['straightFlush'] += 1; data['straightFlush'].append(hand)
+        elif isFourOfAKind(hand):  score['fourOfAKind']    += 1; data['fourOfAKind'].append(hand)
+        elif isFullHouse(hand):    score['fullHouse']     += 1; data['fullHouse'].append(hand)
+        elif isFlush(hand):        score['flush']         += 1; data['flush'].append(hand)
+        elif isStraight(hand):     score['straight']      += 1; data['straight'].append(hand)
+        elif isThreeOfAKind(hand): score['threeOfAKind']   += 1; data['threeOfAKind'].append(hand)
+        elif isTwoPair(hand):      score['twoPairs']       += 1; data['twoPairs'].append(hand)
+        elif isOnePair(hand):      score['onePair']       += 1; data['onePair'].append(hand)
+        elif isHighCard(hand):     score['highCard']      += 1; data['highCard'].append(hand)
+    
 
     print('Total number of Hands Drawn:', handNum)
     print()
     printScore('Straight Flush',  score['straightFlush'], handNum, 1)
-    printScore('Four of a Kind',  score['fourOfKind'],    handNum, 1)
+    printScore('Four of a Kind',  score['fourOfAKind'],    handNum, 1)
     printScore('Full House',      score['fullHouse'],     handNum, 2)
     printScore('Flush',           score['flush'],         handNum, 3)
-    printScore('Three of a Kind', score['threeOfKind'],   handNum)
-    printScore('Two Pairs',       score['twoPair'],       handNum, 2)
+    printScore('Straight',        score['straight'],      handNum, 2)
+    printScore('Three of a Kind', score['threeOfAKind'],   handNum)
+    printScore('Two Pairs',       score['twoPairs'],       handNum, 2)
     printScore('One Pair',        score['onePair'],       handNum, 2)
+    printScore('High Card',       score['highCard'],      handNum, 2)
 
+    writeResults('nuthin', data)
 
     # Print out results for each scoring category and the total number of hands drawn
     # format:
@@ -98,10 +97,12 @@ def isStraightFlush(hand):
         if hand[c].rank != hand[0].rank + c:
             return False
 
-    print("Straight Flush:", hand)
+    #print("Straight Flush:", hand)
     return True
     # returns True if straight flush, otherwise False
-    pass
+
+
+
 def isFourOfAKind(hand):
     return hasNumMatchingCards(hand, 4)
     # returns True if Four of a Kind, otherwise False
@@ -123,7 +124,7 @@ def isFullHouse(hand):
     tmpHand = removeMatchingCards(tmpHand,2)
 
     if (len(tmpHand) == 0):
-        print(hand)
+        #print(hand)
         return True
 
     return False
@@ -162,20 +163,52 @@ def isFlush(hand):
     return True
     # returns True if Flush, otherwise False
 
+def isStraight(hand):
+    for c in range(5):
+        if hand[c].rank != hand[0].rank + c:
+            return False
+    return True
+
 def isThreeOfAKind(hand):
     return hasNumMatchingCards(hand, 3)
     # returns True if Three of a Kind, otherwise False
 
 def isTwoPair(hand):
+    tmpHand = []
+    tmpHand.extend(hand)
+
+    tmpHand = removeMatchingCards(tmpHand,2)
+    tmpHand = removeMatchingCards(tmpHand,2)
+
+    if len(tmpHand) == 1:
+        return True
+
+    return False
     # returns True if Two Pair, otherwise False
-    pass
+
+
 def isOnePair(hand):
-    # returns True if One Pair, otherwise False
-    pass
+    return hasNumMatchingCards(hand, 2)
+
+def isHighCard(hand):
+    hand.sort()
+    ## hand[4]
+    return True
 #-----------------------------------------------
-def writeResults():
-    # writes the results to the disk file "results.txt"
-    pass
+def writeResults(stats, results):
+    with open('results.txt', 'w') as f:
+        # writes the results to the disk file "results.txt"
+        f.write('GENERAL STATS:\n' + stats + '\n\n')
+        for key in results.keys():
+            title = re.sub("([A-Z])"," \g<0>", key)
+            f.write(title.upper() + ':\n')
+            if len(results[key]) == 0:
+                f.write('No results.\n\n')
+                continue
+            for hand in results[key]:
+                f.write(str(hand)+'; ')
+            f.write('\n\n')
+
 def intInput():
     # gets number of hands from user
     try:
