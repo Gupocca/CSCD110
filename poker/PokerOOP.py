@@ -99,10 +99,9 @@ class Hand():
         for i in range(1, 13): # find a match
             if ranks.count(i) >= number:
                 output = []
-                output.extend(self.values)
-                for card in range(len(output)-1, -1, -1):
-                    if number > 0 and output[card].rank == i:
-                        output.pop(card)
+                for card in range(len(self.values)-1, -1, -1):
+                    if number > 0 and self.values[card].rank == i:
+                        output.append(self.values[card])
                         number -= 1
                 return output
         return None
