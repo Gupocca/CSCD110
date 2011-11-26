@@ -14,8 +14,8 @@ class Card():
         self.ACE = 1
         self.SUITNAMES =["Selected", "Spades", "Hearts", "Diamonds", "Clubs"]
         self.SHORTSUITNAMES = ["-","S","H","D","C"]
-        self.RANKNAMES = ["None", "Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"]
-        self.SHORTRANKNAMES = ["-", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+        self.RANKNAMES = ["None", "Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King","Ace+"]
+        self.SHORTRANKNAMES = ["-", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K","A+"]
 
         # our actual properties that make up card
         self.suit=random.randint(1,4)
@@ -25,7 +25,7 @@ class Card():
     def __eq__(self, other):
         return (self.suit == other.suit) and (self.rank == other.rank)
     def __lt__(self,other):
-        return self.rank < other.rank
+        return self.rank == other.rank
     def __gt__(self, other):
         return self.rank > other.rank
     def __le__(self, other):
@@ -36,6 +36,9 @@ class Card():
         return self.suit == other.suit
     def isSameRank (self, other):
         return self.rank == other.rank
+    def sortKey(self):
+        return self.rank, self.suit
+
     # long name if print indivual card
     def __str__(self):
         return self.RANKNAMES[self.rank]+" "+self.SUITNAMES[self.suit]

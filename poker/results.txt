@@ -1,0 +1,105 @@
+[2011-11-25 17:20:05.053000]
+
+RESULTS:
+
+Hands drawn: 1000
+
+Straight Flush:  0 (0.0%)
+Four of a Kind:  0 (0.0%)
+Full House:   2 (0.2%)
+Flush:    6 (0.6%)
+Straight:   4 (0.4%)
+Three of a Kind: 22 (2.1999999999999997%)
+Two Pairs:   38 (3.8%)
+One Pair:   390 (39.0%)
+High Card:   538 (53.800000000000004%)
+
+--------------------
+[2011-11-25 17:21:57.668000]
+
+RESULTS:
+
+Hands drawn: 100000
+
+Straight Flush:  1 (0.001%)
+Four of a Kind:  23 (0.023%)
+Full House:   122 (0.122%)
+Flush:    217 (0.217%)
+Straight:   357 (0.357%)
+Three of a Kind: 2018 (2.018%)
+Two Pairs:   4017 (4.0169999999999995%)
+One Pair:   39683 (39.683%)
+High Card:   53562 (53.562%)
+
+--------------------
+[2011-11-25 17:22:37.900000]
+
+RESULTS:
+
+Hands drawn: 10000
+
+Straight Flush:  0 (0.0%)
+Four of a Kind:  2 (0.02%)
+Full House:   11 (0.11%)
+Flush:    15 (0.15%)
+Straight:   35 (0.35000000000000003%)
+Three of a Kind: 198 (1.9800000000000002%)
+Two Pairs:   446 (4.46%)
+One Pair:   3980 (39.800000000000004%)
+High Card:   5313 (53.13%)
+
+--------------------
+
+[2011-11-25 17:22:56.622000]
+
+RESULTS:
+
+Hands drawn: 10000
+
+Straight Flush:  0 (0.0%)
+Four of a Kind:  1 (0.01%)
+Full House:   14 (0.13999999999999999%)
+Flush:    10 (0.1%)
+Straight:   34 (0.33999999999999997%)
+Three of a Kind: 227 (2.27%)
+Two Pairs:   407 (4.07%)
+One Pair:   3913 (39.129999999999995%)
+High Card:   5394 (53.94%)
+
+--------------------
+
+[2011-11-25 17:25:41.339000]
+
+RESULTS:
+
+Hands drawn: 100
+
+Straight Flush:  0 (0.0%)
+Four of a Kind:  0 (0.0%)
+Full House:   0 (0.0%)
+Flush:    1 (1.0%)
+Straight:   0 (0.0%)
+Three of a Kind: 2 (2.0%)
+Two Pairs:   8 (8.0%)
+One Pair:   38 (38.0%)
+High Card:   51 (51.0%)
+
+--------------------
+
+[2011-11-25 17:29:04.767000]
+
+RESULTS:
+
+Hands drawn: 10000
+
+Straight Flush:  0 (0.0%)
+Four of a Kind:  5 (0.05%)
+Full House:   9 (0.09%)
+Flush:    16 (0.16%)
+Straight:   0 (0.0%)
+Three of a Kind: 206 (2.06%)
+Two Pairs:   406 (4.06%)
+One Pair:   3968 (39.68%)
+High Card:   5390 (53.900000000000006%)
+
+--------------------
