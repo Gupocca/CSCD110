@@ -1,166 +1,119 @@
-# this allows for direct addressing Card() instead of Card.Card() construction
 from Card import *
-import re
 
 def main():
-    # get number of hands from user
     handNum = 0
-    while handNum == 0 or handNum == None:
-        handNum = intInput()
+    while (handNum == 0 or handNum == None): handNum = intInput()
 
-    # initialize accumulator variables for each hand scoring category
-    score = {'straightFlush': 0, 'fourOfAKind': 0, 'fullHouse': 0, 'flush': 0, 'straight': 0, 'threeOfAKind': 0, 'twoPairs': 0, 'onePair': 0, 'highCard': 0}
-    data  = {'straightFlush': [], 'fourOfAKind': [], 'fullHouse': [], 'flush': [], 'straight': [], 'threeOfAKind': [], 'twoPairs': [], 'onePair': [], 'highCard': []}
+    data = [0,0,0,0,0,0,0,0,0]
+    titles = ['Straight Flush','Four of a Kind','Full House','Flush','Straight','Three of a Kind','Two Pairs','One Pair','High Card']
 
-    # loop for number of hands
-    for h in range(handNum):
-        # draw hand
-        hand = DrawHand()
+    for irrelevantLittleNumber in range(handNum + 1):
+        hand = drawHand()
 
-        # send hand to scoring methods
-        if isStraightFlush(hand):  score['straightFlush'] += 1; data['straightFlush'].append(hand)
-        elif isFourOfAKind(hand):  score['fourOfAKind']   += 1; data['fourOfAKind'].append(hand)
-        elif isFullHouse(hand):    score['fullHouse']     += 1; data['fullHouse'].append(hand)
-        elif isFlush(hand):        score['flush']         += 1; data['flush'].append(hand)
-        elif isStraight(hand):     score['straight']      += 1; data['straight'].append(hand)
-        elif isThreeOfAKind(hand): score['threeOfAKind']  += 1; data['threeOfAKind'].append(hand)
-        elif isTwoPair(hand):      score['twoPairs']      += 1; data['twoPairs'].append(hand)
-        elif isOnePair(hand):      score['onePair']       += 1; data['onePair'].append(hand)
-        else: score['highCard'] += 1; data['highCard'].append(hand)
+        if (isStraight(hand) and isFlush(hand)): data[0] += 1 # straight flush
+        elif (hasNumMatchingCards(hand, 4)):     data[1] += 1 # four of a kind
+        elif (hasGroups(hand, 3, 2)):            data[2] += 1 # full house
+        elif (isFlush(hand)):                    data[3] += 1 # flush
+        elif (isStraight(hand)):                 data[4] += 1 # straight
+        elif (hasNumMatchingCards(hand, 3)):     data[5] += 1 # three of a kind
+        elif (hasGroups(hand, 2, 2)):            data[6] += 1 # two pairs
+        elif (hasNumMatchingCards(hand, 2)):     data[7] += 1 # one pair
+        else: data[8] += 1 # high card
 
-    print()
     cache = 'Hands drawn: ' + str(handNum) + '\n\n'
+    for i in range(9):
+        cache += getScore(titles[i], data[i], handNum, [1,1,2,3,2,0,2,2,2][i]) # list at the end contains "tab #s" for display
 
-    cache += getScore('Straight Flush',  score['straightFlush'], handNum, 1)
-    cache += getScore('Four of a Kind',  score['fourOfAKind'],   handNum, 1)
-    cache += getScore('Full House',      score['fullHouse'],     handNum, 2)
-    cache += getScore('Flush',           score['flush'],         handNum, 3)
-    cache += getScore('Straight',        score['straight'],      handNum, 2)
-    cache += getScore('Three of a Kind', score['threeOfAKind'],  handNum)
-    cache += getScore('Two Pairs',       score['twoPairs'],      handNum, 2)
-    cache += getScore('One Pair',        score['onePair'],       handNum, 2)
-    cache += getScore('High Card',       score['highCard'],      handNum, 2)
+    print('\n' + cache) # print cache to screen
+    cache = cache.replace('\t',' ') # remove tabs for file formatting
+    writeResults(cache) # write to file
 
-    print(cache)
-    cache = cache.replace('\t',' ')
-    writeResults(cache, data)
 
-#-----------------------------------------------
+def drawHand():
+    vals = [] # create value list
 
-def getScore(title, score, total, tabs = 0):
-    return str(title) + ':' + '\t' * tabs + str(score) + ' (' + str(score/total*100) + '%)\n'
-
-def DrawHand():
-    # randomly draw hand, ensure not duplicates, returns hand to main
-    hand = []
-    for c in range(5):
+    for c in range(5): # draw hand
         card = Card()
-        while card in hand: # must be unique
+        while card in vals: # must be unique
             card = Card()
-        hand.append(card)
-    return hand
+        vals.append(card) # add to list
 
-#-----------------------------------------------
+    vals.sort(key=lambda x: x.sortKey())
+    return vals
 
-def isStraightFlush(hand):
-    hand.sort()
-
-    for c in range(5):
-        if not hand[c].isSameSuit(hand[0]):
-            return False
-        if hand[c].rank != hand[0].rank + c:
-            return False
-
-    return True
-    # returns True if straight flush, otherwise False
-
-def isFourOfAKind(hand):
-    return hasNumMatchingCards(hand, 4)
-    # returns True if Four of a Kind, otherwise False
-
-def isFullHouse(hand):
-    tmpHand = []
-    tmpHand.extend(hand)
-
-    tmpHand = removeMatchingCards(tmpHand,3)
-    tmpHand = removeMatchingCards(tmpHand,2)
-
-    if (len(tmpHand) == 0):
-        return True
-
-    return False
 
 def isFlush(hand):
-    for i in range(len(hand)-1):
-        if hand[i].suit != hand[i+1].suit:
+    for i in range(5): # all cards must have the same suit as the first
+        if not hand[i].isSameSuit(hand[0]):
             return False
     return True
-    # returns True if Flush, otherwise False
 
 def isStraight(hand):
-    for c in range(5):
-        if hand[c].rank != hand[0].rank + c:
-            return False
-    return True
+    return ((hand[1].rank == hand[0].rank + 1) and (hand[2].rank == hand[1].rank + 1) and \
+    (hand[3].rank == hand[2].rank + 1) and (hand[4].rank == hand[3].rank + 1)) or \
+    ((hand[0].rank == 1) and (hand[2].rank == hand[1].rank + 1) and \
+    (hand[3].rank == hand[2].rank + 1) and (hand[4].rank == hand[3].rank + 1) \
+    and (14 == hand[4].rank + 1))
 
-def isThreeOfAKind(hand):
-    return hasNumMatchingCards(hand, 3)
-    # returns True if Three of a Kind, otherwise False
 
-def isTwoPair(hand):
-    tmpHand = []
-    tmpHand.extend(hand)
-
-    tmpHand = removeMatchingCards(tmpHand,2)
-    tmpHand = removeMatchingCards(tmpHand,2)
-
-    if len(tmpHand) == 1:
-        return True
-
-    return False
-    # returns True if Two Pair, otherwise False
-
-def isOnePair(hand):
-    return hasNumMatchingCards(hand, 2)
-
-#-----------------------------------------------
 def hasNumMatchingCards(hand, number):
     ranks = []
-    for card in hand:
+    for card in hand: # add ranks to list
         ranks.append(card.rank)
-    for i in range(1,13):
-        if ranks.count(i) == number:
+    for i in range(1, 13): # find a match
+        if ranks.count(i) >= number:
             return True
     return False
 
+def hasGroups(hand, size1, size2): # size1 + size2 <= 5
+    if size1 < size2:
+        size1, size2 = size2, size1
+
+    hnd = removeMatchingCards(hand, size1) # a group
+    hnd = removeMatchingCards(hnd, size2) # removes another
+
+    # if both were removed w/ success, then the len() should equal...
+    if (len(hnd) == 5 - size1 - size2):
+        return True
+
+    return False
+
+
 def removeMatchingCards(hand, number):
+    hnd = []
+    hnd.extend(hand)
+
     ranks = []
     match = 0
 
-    for card in hand:
+    for card in hand: # enumerate through cards and add ranks to list
         ranks.append(card.rank)
-    for i in range(1,13):
-        if ranks.count(i) == number:
+    for i in range(1, 13): # enumerate through numbers to find exact match
+        if ranks.count(i) >= number:
             match = i
-    if match != 0:
-        for i in range(number):
-            hand.remove(hand[ranks.index(match)])
-    return hand
+    if match != 0: # found result
+        for i in range(number): # only removes first x results for precision
+            ix=ranks.index(match)
+            hnd.pop(ix)
+            ranks.pop(ix)
+
+    return hnd
+
+
+
+
+def getScore(title, score, total, tabs = 0):
+    # returns formatted score -- "title: number (percent %)"
+    return str(title) + ':' + '\t' * tabs + ' ' + str(score) + ' (' + str(score/total*100) + '%)\n'
 #-----------------------------------------------
-def writeResults(stats, results):
-    with open('results.txt', 'w') as f:
-        # writes the results to the disk file "results.txt"
-        f.write('\nGENERAL STATS:\n\n' + stats + '\n')
-        for key in results.keys():
-            f.write('-' * 20 + '\n\n')
-            title = re.sub("([A-Z])"," \g<0>", key)
-            f.write(title.upper() + ':\n\n')
-            if len(results[key]) == 0:
-                f.write('No results.\n\n')
-                continue
-            for hand in results[key]:
-                f.write(str(hand)+'; ')
-            f.write('\n\n')
+def writeResults(stats):
+    try:
+        with open('results.txt', 'a') as f:
+            # general statistics (percentages)
+            f.write('\n[' + str(datetime.datetime.now())  +']\n')
+            f.write('\nRESULTS:\n\n' + stats + '\n' + '-' * 20 + '\n')
+    except:
+        print('Unable to write to file')
 
 def intInput():
     # gets number of hands from user
@@ -169,4 +122,17 @@ def intInput():
     except:
         return None
 
+
+
+def tester():
+    h = drawHand()
+    h[0].rank = 11
+    h[1].rank = 11
+    h[2].rank = 12
+    h[3].rank = 12
+    h[4].rank = 12
+    print(hasGroups(h,2,3))
+
 main()
+##print('\n')
+##tester()
