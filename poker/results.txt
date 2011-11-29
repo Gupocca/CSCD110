@@ -103,3 +103,75 @@ One Pair:   3968 (39.68%)
 High Card:   5390 (53.900000000000006%)
 
 --------------------
+
+[2011-11-28 16:05:40.180000]
+
+RESULTS:
+
+Hands drawn: 1000
+
+Straight Flush:  0 (0.0%)
+Four of a Kind:  0 (0.0%)
+Full House:   1 (0.1%)
+Flush:    1 (0.1%)
+Straight:   5 (0.5%)
+Three of a Kind: 18 (1.7999999999999998%)
+Two Pairs:   40 (4.0%)
+One Pair:   400 (40.0%)
+High Card:   536 (53.6%)
+
+--------------------
+
+[2011-11-28 16:06:15.984000]
+
+RESULTS:
+
+Hands drawn: 10000
+
+Straight Flush:  0 (0.0%)
+Four of a Kind:  2 (0.02%)
+Full House:   11 (0.11%)
+Flush:    18 (0.18%)
+Straight:   48 (0.48%)
+Three of a Kind: 187 (1.87%)
+Two Pairs:   413 (4.130000000000001%)
+One Pair:   3925 (39.25%)
+High Card:   5397 (53.97%)
+
+--------------------
+
+[2011-11-28 16:06:49.676000]
+
+RESULTS:
+
+Hands drawn: 100000
+
+Straight Flush:  2 (0.002%)
+Four of a Kind:  19 (0.019%)
+Full House:   128 (0.128%)
+Flush:    191 (0.191%)
+Straight:   382 (0.382%)
+Three of a Kind: 1928 (1.928%)
+Two Pairs:   4024 (4.024%)
+One Pair:   39793 (39.793%)
+High Card:   53534 (53.534000000000006%)
+
+--------------------
+
+[2011-11-28 16:36:00.335000]
+
+RESULTS:
+
+Hands drawn: 1000
+
+Straight Flush:  0 (0.0%)
+Four of a Kind:  0 (0.0%)
+Full House:   0 (0.0%)
+Flush:    0 (0.0%)
+Straight:   3 (0.3%)
+Three of a Kind: 17 (1.7000000000000002%)
+Two Pairs:   44 (4.3999999999999995%)
+One Pair:   384 (38.4%)
+High Card:   553 (55.300000000000004%)
+
+--------------------
